@@ -1,0 +1,16 @@
+@import "../variables.scss";
+$border-color: gray
+
+:host {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    width: 10px;
+    display: block;
+    background: #ff0000;
+    z-index: 10;
+    cursor: col-resize;
+    background: $head-start-color;
+    border-left:1px solid $border-color;
+    border-right:1px solid $border-color;
+}
