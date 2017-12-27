@@ -10,7 +10,9 @@ import { LibraryPaneComponent } from './layout/library-pane/library-pane.compone
 import { VerticalBarComponent } from './layout/vertical-bar/vertical-bar.component';
 import { SceneThumbComponent } from './layout/scene-thumb/scene-thumb.component';
 import { SceneService } from './data/scene.service';
-
+import { ToolService } from './layout/tool.service';
+import { ToolButtonComponent } from './layout/tool-button/tool-button.component';
+import { MaterialModule} from './material.module'
 
 @NgModule({
   declarations: [
@@ -20,12 +22,14 @@ import { SceneService } from './data/scene.service';
     ScenePaneComponent,
     LibraryPaneComponent,
     VerticalBarComponent,
-    SceneThumbComponent
+    SceneThumbComponent,
+    ToolButtonComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    MaterialModule
   ],
-  providers: [SceneService],
+  providers: [SceneService, ToolService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

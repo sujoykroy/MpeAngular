@@ -1,6 +1,8 @@
 import { Component, HostListener, Output, EventEmitter } from '@angular/core';
 import { VerticalBarComponent } from './layout/vertical-bar/vertical-bar.component';
 import { Scene } from './data/scene'
+import { SceneService } from './data/scene.service'
+import { ToolService } from './layout/tool.service'
 
 @Component({
   selector: 'app-root',
@@ -21,6 +23,16 @@ export class AppComponent {
   mousePosX = 0;
   downItemName = null;
   downLastValue = 0;
+
+  constructor(toolService: ToolService, sceneService: SceneService) {
+    toolService.addNewTool(
+        "Scene",
+        "New Scene",
+        ()=>{
+            sceneService.createScene();
+        }
+    );
+  }
 
   @HostListener("mousedown", ["$event"])
   onMouseDown(event: any) {

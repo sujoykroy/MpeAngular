@@ -16,8 +16,7 @@ export class ScenePaneComponent implements OnInit {
     this.sceneService = sceneService;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   selectScene(scene:Scene) {
     this.selectedScene = scene;
