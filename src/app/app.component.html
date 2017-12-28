@@ -10,14 +10,13 @@
     [style.width.px] = "vertBarWidth"
     [style.left.px]="scenePaneWidth"
     [style.bottom.px]="footerHeight"></vertical-bar>
-
-<div style="text-align:center; position: absolute"
+<scene-editor style="text-align:center; position: absolute"
     [style.top.px]="headerHeight"
     [style.left.px]="scenePaneWidth+vertBarWidth"
     [style.right.px]="libraryPaneWidth+vertBarWidth"
-    [style.top.px]="headerHeight">
-        mid content
-</div>
+    [style.bottom.px]="footerHeight"
+    [scene]="getActiveScene()">
+</scene-editor>
 <vertical-bar name="libraryBar"
     style = "right=0px"
     [style.top.px]="headerHeight"

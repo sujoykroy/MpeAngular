@@ -19,14 +19,14 @@ export class ScenePaneComponent implements OnInit {
   ngOnInit() {}
 
   selectScene(scene:Scene) {
-    this.selectedScene = scene;
+    this.sceneService.setActiveScene(scene);
   }
 
   isSelectedScene(scene:Scene) {
-    return scene.equals(this.selectedScene);
+    return this.sceneService.isActiveScene(scene);
   }
 
   getScenes():Scene[] {
-    return this.sceneService.scenes;
+    return this.sceneService.getScenes();
   }
 }

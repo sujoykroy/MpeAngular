@@ -12,7 +12,8 @@ import { SceneThumbComponent } from './layout/scene-thumb/scene-thumb.component'
 import { SceneService } from './data/scene.service';
 import { ToolService } from './layout/tool.service';
 import { ToolButtonComponent } from './layout/tool-button/tool-button.component';
-import { MaterialModule} from './material.module'
+import { MaterialModule} from './material.module';
+import { SceneEditorComponent } from './layout/scene-editor/scene-editor.component'
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { MaterialModule} from './material.module'
     LibraryPaneComponent,
     VerticalBarComponent,
     SceneThumbComponent,
-    ToolButtonComponent
+    ToolButtonComponent,
+    SceneEditorComponent
   ],
   imports: [
     BrowserModule,

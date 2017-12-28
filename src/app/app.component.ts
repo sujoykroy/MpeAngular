@@ -11,6 +11,7 @@ import { ToolService } from './layout/tool.service'
 })
 export class AppComponent {
   title = 'app';
+  sceneService: SceneService;
 
   headerHeight = 100;
   footerHeight = 50;
@@ -25,6 +26,7 @@ export class AppComponent {
   downLastValue = 0;
 
   constructor(toolService: ToolService, sceneService: SceneService) {
+    this.sceneService = sceneService;
     toolService.addNewTool(
         "Scene",
         "New Scene",
@@ -32,6 +34,10 @@ export class AppComponent {
             sceneService.createScene();
         }
     );
+  }
+
+  getActiveScene() {
+    return this.sceneService.getActiveScene();
   }
 
   @HostListener("mousedown", ["$event"])

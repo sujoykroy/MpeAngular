@@ -10,7 +10,7 @@ import { ToolService } from '../tool.service'
 
 export class HeaderComponent implements OnInit {
   toolCategories = [];
-  tools = [];
+  tools = {};
 
   constructor(toolService: ToolService) {
     this.toolCategories = Object.keys(toolService.tools);
