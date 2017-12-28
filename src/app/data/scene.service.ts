@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import {Scene} from './scene'
+import { Scene } from './scene';
+import { Point } from '../commons';
 
 @Injectable()
 export class SceneService {
   scenes: Scene[] = [];
   sceneIdSeed = 0;
   activeScene:Scene;
-  width = 1280;
-  height = 720;
+  sceneSize:Point = new Point(1280, 720);
 
   constructor() {
     for(let i =0; i<5; i++) {
@@ -16,7 +16,7 @@ export class SceneService {
   }
 
   createScene(): Scene {
-    let scene = new Scene(++this.sceneIdSeed);
+    let scene = new Scene(++this.sceneIdSeed, this.sceneSize);
     this.scenes.push(scene);
     return scene;
   }

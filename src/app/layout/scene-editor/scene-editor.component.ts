@@ -18,24 +18,16 @@ export class SceneEditorComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-    console.log("oninit");
-  }
+  ngOnInit() {}
 
   @HostListener("mousedown", ["event"])
-  onMouseDown(event) {
-    console.log("mousedown");
-  }
+  onMouseDown(event) {}
 
   @HostListener("mousemove", ["event"])
-  onMouseMove(event) {
-    console.log("mousemove");
-  }
+  onMouseMove(event) {}
 
   @HostListener("mouseup", ["event"])
-  onMouseUp(event) {
-    console.log("mouseup");
-  }
+  onMouseUp(event) {}
 
   ngAfterViewInit() {
     let canvas = this.thumbCanvasElem.nativeElement;
