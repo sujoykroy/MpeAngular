@@ -1,3 +1,3 @@
 export {Point} from './point';
-export {Color} from './color';
+export {Color, parseColor} from './color';
 export * from './utils';

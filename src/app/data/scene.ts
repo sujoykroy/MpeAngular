@@ -18,10 +18,10 @@ export class Scene {
     }
 
     addShape(shape:Shape) {
-
+        this.containerShape.addShape(shape);
     }
 
     draw(ctx) {
-
+        this.containerShape.draw(ctx);
     }
 }

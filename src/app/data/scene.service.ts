@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Scene } from './scene';
 import { Point } from '../commons';
+import { RectangleShape } from '../shapes'
 
 @Injectable()
 export class SceneService {
@@ -13,6 +14,14 @@ export class SceneService {
     for(let i =0; i<5; i++) {
         this.createScene();
     }
+
+    let scene = this.scenes[0];
+    let rectShape1 = RectangleShape.create(100, 100, "#FF0000", "#00FF00", 10);
+    scene.addShape(rectShape1);
+
+    let rectShape2 = RectangleShape.create(100, 100, "#FF0000", "#0000FF", 20);
+    rectShape2.moveTo(100,200);
+    scene.addShape(rectShape2);
   }
 
   createScene(): Scene {
@@ -34,7 +43,7 @@ export class SceneService {
   }
 
   getActiveScene() {
-    return this.activeScene;
+    return this.activeScene || this.scenes[0];
   }
 
 }
