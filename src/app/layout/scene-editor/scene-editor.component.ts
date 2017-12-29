@@ -11,6 +11,12 @@ import { Point } from '../../commons'
 })
 
 export class SceneEditorComponent implements OnInit {
+  mouseInitPos: Point;
+  mousePos:Point;
+  pad:number = 10;
+  sceneScale:number = 1;
+  sceneOffset: Point;
+
   @Input() scene:Scene;
   @ViewChild("canvas") thumbCanvasElem: ElementRef;
 
@@ -24,18 +30,27 @@ export class SceneEditorComponent implements OnInit {
 
   constructor(public viewContainerRef: ViewContainerRef,
               public sceneService: SceneService) {
-
+    this.mouseInitPos = new Point(0, 0);
+    this.mousePos = new Point(0, 0);
+    this.sceneOffset = new Point(0, 0);
   }
 
   ngOnInit() {}
 
-  @HostListener("mousedown", ["event"])
-  onMouseDown(event) {}
+  @HostListener("mousedown", ["$event"])
+  onMouseDown(event) {
+    this.mouseInitPos.assign(event.clientX, event.clinetY);
+    this.mousePos.assign(event.clientX, event.clinetY);
+    this.scene.selectItemAt(this.mousePos);
+  }
 
-  @HostListener("mousemove", ["event"])
-  onMouseMove(event) {}
+  @HostListener("mousemove", ["$event"])
+  onMouseMove(event) {
+    this.mousePos.assign(event.clientX, event.clinetY);
+    this.scene.moveActiveItem(this.mousePos.diff(this.mouseInitPos));
+  }
 
-  @HostListener("mouseup", ["event"])
+  @HostListener("mouseup", ["$event"])
   onMouseUp(event) {}
 
   resizeCanvas() {
@@ -43,6 +58,16 @@ export class SceneEditorComponent implements OnInit {
     let parentNode = this.viewContainerRef.element.nativeElement;
     canvas.width = parentNode.clientWidth;;
     canvas.height = parentNode.clientHeight;
+
+    let scene = this.sceneService.getActiveScene();
+    let canvasSize = new Point(canvas.width-2*this.pad, canvas.height-2*this.pad);
+    let sceneScaleX =  canvasSize.x/scene.size.x;
+    let sceneScaleY = canvasSize.y/scene.size.y;
+
+    this.sceneScale = Math.min(sceneScaleX, sceneScaleY);
+    this.sceneOffset.assign(
+            -(scene.size.x*this.sceneScale-canvasSize.x)*0.5,
+            -(scene.size.y*this.sceneScale-canvasSize.y)*0.5);
   }
 
   ngAfterViewInit() {
@@ -51,11 +76,8 @@ export class SceneEditorComponent implements OnInit {
   }
 
   draw() {
-    let parentNode = this.viewContainerRef.element.nativeElement;
-
     let canvas = this.thumbCanvasElem.nativeElement;
     let ctx = canvas.getContext("2d");
-    let pad = 10;
     let scene = this.sceneService.getActiveScene();
     if (!scene) {
         return;
@@ -63,25 +85,18 @@ export class SceneEditorComponent implements OnInit {
     //clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let paddedSceneSize = new Point(scene.size.x+2*pad, scene.size.y+2*pad);
-    let sceneScaleX =  canvas.width/paddedSceneSize.x;
-    let sceneScaleY = canvas.height/paddedSceneSize.y;
-    let sceneScale = Math.min(sceneScaleX, sceneScaleY);
-
-    ctx.translate(
-        -(paddedSceneSize.x*sceneScale-canvas.width)*0.5,
-        -(paddedSceneSize.y*sceneScale-canvas.height)*0.5);
-    ctx.scale(sceneScale, sceneScale);
+    ctx.translate(this.sceneOffset.x, this.sceneOffset.y);
+    ctx.scale(this.sceneScale, this.sceneScale);
 
     //Make outline shadow
-    ctx.shadowBlur=pad;
+    ctx.shadowBlur=this.pad;
     ctx.shadowColor= "gray";
     ctx.fillStyle= "white";
-    ctx.fillRect(pad, pad, scene.size.x, scene.size.y);
+    ctx.fillRect(0, 0, scene.size.x, scene.size.y);
 
     ctx.shadowBlur=0;
 
-    ctx.translate(pad, pad);
+    //ctx.translate(pad, pad);
     scene.draw(ctx)
   }
 

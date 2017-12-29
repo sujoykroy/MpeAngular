@@ -28,4 +28,21 @@ export class Point {
         this.x = x;
         this.y = y;
     }
+
+    assign(x:number, y:number) {
+        this.x = x;
+        this.y = y;
+    }
+
+    copyFrom(other: Point) {
+        this.x = other.x;
+        this.y = other.y;
+    }
+
+    diff(other: Point) {
+        let diffPoint = this.copy();
+        diffPoint.x -= other.x;
+        diffPoint.y -= other.y;
+        return diffPoint;
+    }
 }

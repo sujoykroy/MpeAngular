@@ -33,6 +33,25 @@ export class Shape {
         this.translation = new Point(0, 0);
     }
 
+    copy():Shape {
+        return null;
+    }
+
+    copyInto(other: Shape) {
+        other.anchorAt = copyObject(this.anchorAt);
+        other.borderColor = copyObject(this.borderColor);
+        other.fillColor = copyObject(this.fillColor);
+        other.width = this.width;
+        other.height = this.height;
+        other.translation =  this.translation.copy();
+    }
+
+    isWithin(point: Point, margin:number=0) {
+        point = this.transformPoint(point)
+        return point.x>=-margin && point.x<=this.width+margin &&
+               point.y>=-margin && point.y<=this.height+margin;
+    }
+
     getAbsAnchorAt() {
         let absAnchor = this.anchorAt.copy();
         absAnchor.scale(this.postScaleX, this.postScaleY);
@@ -42,8 +61,18 @@ export class Shape {
         return absAnchor;
     }
 
-    moveTo(x:number, y: number) {
-        let point = new Point(x,y);
+    transformPoint(point:Point) {
+        let tPoint = point.copy();
+        let absAnchorat = this.getAbsAnchorAt();
+        tPoint.translate(-absAnchorat.x, -absAnchorat.y);
+        tPoint.scale(1./this.scaleX, 1./this.scaleY);
+        tPoint.rotateCoordinate(this.angle);
+        tPoint.scale(1./this.postScaleX, 1./this.postScaleY);
+        tPoint.translate(this.anchorAt.x, this.anchorAt.y);
+        return tPoint;
+    }
+
+    moveTo(point:Point) {
         let absAnchorAt = this.getAbsAnchorAt();
         point.translate(-absAnchorAt.x, -absAnchorAt.y)
         this.translation.x += point.x;
@@ -81,4 +110,5 @@ export class Shape {
     }
 
     drawPath(ctx) {}
+
 }

@@ -19,6 +19,13 @@ export class RectangleShape extends Shape {
         this.corner = corner;
     }
 
+    copy() {
+        let newOb = new RectangleShape(
+            this.anchorAt, this.borderColor, this.fillColor,
+            this.width, this.height, this.corner);
+        return newOb;
+    }
+
     drawPath(ctx) {
         drawRoundedRectangle(ctx,
             this.translation.x, this.translation.y,

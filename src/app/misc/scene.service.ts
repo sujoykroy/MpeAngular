@@ -20,7 +20,7 @@ export class SceneService {
     scene.addShape(rectShape1);
 
     let rectShape2 = RectangleShape.create(100, 100, "#FF0000", "#0000FF", 20);
-    rectShape2.moveTo(100,200);
+    rectShape2.moveTo(new Point(100, 100));
     scene.addShape(rectShape2);
   }
 
