@@ -1,7 +1,7 @@
 import { Component, HostListener, Output, EventEmitter } from '@angular/core';
 import { VerticalBarComponent } from './layout/vertical-bar/vertical-bar.component';
-import { Scene } from './data/scene'
-import { SceneService } from './data/scene.service'
+import { Scene } from './misc/scene'
+import { SceneService } from './misc/scene.service'
 import { ToolService } from './layout/tool.service'
 
 @Component({

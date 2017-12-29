@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import { HostListener,  ViewContainerRef} from '@angular/core';
-import { Scene } from '../../data/scene'
-import { SceneService } from '../../data/scene.service'
+import { Scene } from '../../misc/scene'
+import { SceneService } from '../../misc/scene.service'
 import { Point } from '../../commons'
 
 @Component({
