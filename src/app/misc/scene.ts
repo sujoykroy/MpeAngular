@@ -35,7 +35,6 @@ export class Scene {
         if (!this.selectedShape) return;
         let absAnchorAt = this.initShape.getAbsAnchorAt();
         absAnchorAt.translate(diffPoint.x, diffPoint.y);
-        console.log("absAnchorAt", absAnchorAt);
         this.selectedShape.moveTo(absAnchorAt);
     }
 

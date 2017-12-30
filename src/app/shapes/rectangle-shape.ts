@@ -23,6 +23,7 @@ export class RectangleShape extends Shape {
         let newOb = new RectangleShape(
             this.anchorAt, this.borderColor, this.fillColor,
             this.width, this.height, this.corner);
+        this.copyInto(newOb);
         return newOb;
     }
 

@@ -41,12 +41,12 @@ export class Shape {
     }
 
     copyInto(other: Shape) {
-        other.anchorAt = copyObject(this.anchorAt);
-        other.borderColor = copyObject(this.borderColor);
-        other.fillColor = copyObject(this.fillColor);
-        other.width = this.width;
-        other.height = this.height;
-        other.translation =  this.translation.copy();
+        //other.anchorAt = copyObject(this.anchorAt);
+        //other.borderColor = copyObject(this.borderColor);
+        //other.fillColor = copyObject(this.fillColor);
+        //other.width = this.width;
+        //other.height = this.height;
+        other.translation.copyFrom(this.translation);
     }
 
     isWithin(point: Point, margin:number=0) {

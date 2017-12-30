@@ -17,7 +17,6 @@ export class SceneEditorComponent implements OnInit {
   sceneScale:number = 1;
   sceneOffset: Point;
   mouseIsDown: boolean = false;
-  public redrawEvent: EventEmitter<any> = new EventEmitter(true);
 
   @Input() scene:Scene;
   @Input() fakeChange;
@@ -36,7 +35,6 @@ export class SceneEditorComponent implements OnInit {
     this.mouseInitPos = new Point(0, 0);
     this.mousePos = new Point(0, 0);
     this.sceneOffset = new Point(0, 0);
-    console.log(this.fakeChange);
   }
 
   ngOnInit() {}
@@ -59,14 +57,8 @@ export class SceneEditorComponent implements OnInit {
     this.transformMousePoints(this.mousePos);
     if (this.mouseIsDown) {
         this.scene.moveActiveItem(this.mousePos.diff(this.mouseInitPos));
-        this.fakeChange = +new Date();
+        this.draw();
     }
-  }
-
-  @HostListener("redraw", ["$event"])
-  onRedraw() {
-    console.log("onRedraw");
-    this.draw();
   }
 
   @HostListener("mouseup", ["$event"])
@@ -75,10 +67,8 @@ export class SceneEditorComponent implements OnInit {
   }
 
   transformMousePoints(point) {
-    //console.log("point1", point, this.sceneOffset);
     point.translate(-this.sceneOffset.x, -this.sceneOffset.y);
     point.scale(1/this.sceneScale, 1/this.sceneScale);
-    //console.log("point2", point);
   }
 
   resizeCanvas() {
@@ -111,6 +101,7 @@ export class SceneEditorComponent implements OnInit {
         return;
     }
     //clear the canvas
+    ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.translate(this.sceneOffset.x, this.sceneOffset.y);
 
@@ -123,10 +114,10 @@ export class SceneEditorComponent implements OnInit {
     ctx.shadowBlur=0;
     ctx.scale(this.sceneScale, this.sceneScale);
     scene.draw(ctx)
+    ctx.restore();
   }
 
   ngOnChanges(changes) {
-    console.log("changes", changes);
     this.draw();
   }
 }
