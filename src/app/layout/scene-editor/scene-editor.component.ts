@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
-import { HostListener,  ViewContainerRef} from '@angular/core';
+import { HostListener,  ViewContainerRef, EventEmitter} from '@angular/core';
 import { Scene } from '../../misc/scene'
 import { SceneService } from '../../misc/scene.service'
 import { Point } from '../../commons'
@@ -16,8 +16,11 @@ export class SceneEditorComponent implements OnInit {
   pad:number = 10;
   sceneScale:number = 1;
   sceneOffset: Point;
+  mouseIsDown: boolean = false;
+  public redrawEvent: EventEmitter<any> = new EventEmitter(true);
 
   @Input() scene:Scene;
+  @Input() fakeChange;
   @ViewChild("canvas") thumbCanvasElem: ElementRef;
 
   @Input() set widthSize(value:Number) {
@@ -33,25 +36,50 @@ export class SceneEditorComponent implements OnInit {
     this.mouseInitPos = new Point(0, 0);
     this.mousePos = new Point(0, 0);
     this.sceneOffset = new Point(0, 0);
+    console.log(this.fakeChange);
   }
 
   ngOnInit() {}
 
   @HostListener("mousedown", ["$event"])
   onMouseDown(event) {
-    this.mouseInitPos.assign(event.clientX, event.clinetY);
-    this.mousePos.assign(event.clientX, event.clinetY);
+    this.mouseIsDown = true;
+    this.mouseInitPos.assign(event.layerX, event.layerY);
+    this.mousePos.assign(event.layerX, event.layerY);
+
+    this.transformMousePoints(this.mouseInitPos);
+    this.transformMousePoints(this.mousePos);
+
     this.scene.selectItemAt(this.mousePos);
   }
 
   @HostListener("mousemove", ["$event"])
   onMouseMove(event) {
-    this.mousePos.assign(event.clientX, event.clinetY);
-    this.scene.moveActiveItem(this.mousePos.diff(this.mouseInitPos));
+    this.mousePos.assign(event.layerX, event.layerY);
+    this.transformMousePoints(this.mousePos);
+    if (this.mouseIsDown) {
+        this.scene.moveActiveItem(this.mousePos.diff(this.mouseInitPos));
+        this.fakeChange = +new Date();
+    }
+  }
+
+  @HostListener("redraw", ["$event"])
+  onRedraw() {
+    console.log("onRedraw");
+    this.draw();
   }
 
   @HostListener("mouseup", ["$event"])
-  onMouseUp(event) {}
+  onMouseUp(event) {
+    this.mouseIsDown = false;
+  }
+
+  transformMousePoints(point) {
+    //console.log("point1", point, this.sceneOffset);
+    point.translate(-this.sceneOffset.x, -this.sceneOffset.y);
+    point.scale(1/this.sceneScale, 1/this.sceneScale);
+    //console.log("point2", point);
+  }
 
   resizeCanvas() {
     let canvas = this.thumbCanvasElem.nativeElement;
@@ -66,8 +94,8 @@ export class SceneEditorComponent implements OnInit {
 
     this.sceneScale = Math.min(sceneScaleX, sceneScaleY);
     this.sceneOffset.assign(
-            -(scene.size.x*this.sceneScale-canvasSize.x)*0.5,
-            -(scene.size.y*this.sceneScale-canvasSize.y)*0.5);
+            this.pad+(canvasSize.x-scene.size.x*this.sceneScale)*0.5,
+            this.pad+(canvasSize.y-scene.size.y*this.sceneScale)*0.5);
   }
 
   ngAfterViewInit() {
@@ -84,23 +112,21 @@ export class SceneEditorComponent implements OnInit {
     }
     //clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.translate(this.sceneOffset.x, this.sceneOffset.y);
-    ctx.scale(this.sceneScale, this.sceneScale);
 
     //Make outline shadow
     ctx.shadowBlur=this.pad;
     ctx.shadowColor= "gray";
     ctx.fillStyle= "white";
-    ctx.fillRect(0, 0, scene.size.x, scene.size.y);
+    ctx.fillRect(0, 0, scene.size.x*this.sceneScale, scene.size.y*this.sceneScale);
 
     ctx.shadowBlur=0;
-
-    //ctx.translate(pad, pad);
+    ctx.scale(this.sceneScale, this.sceneScale);
     scene.draw(ctx)
   }
 
   ngOnChanges(changes) {
+    console.log("changes", changes);
     this.draw();
   }
 }

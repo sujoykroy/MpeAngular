@@ -1,6 +1,8 @@
 import {Point, Color, copyObject, parseColor} from '../commons'
 
 export class Shape {
+    static IdSeed:number = 0;
+
     anchorAt:Point;
     width: number;
     height: number;
@@ -12,14 +14,14 @@ export class Shape {
     scaleY: number = 1;
     sameScaleXY: boolean = false;
     postScaleX: number = 1;
-    postScaleY: number = 0;
+    postScaleY: number = 1;
 
     translation: Point;
     angle: number = 0;
     preMatrix:any;
     visible: boolean = true;
 
-    idNum: number;
+    idNum: string;
     parentShape: Shape;
 
     constructor(
@@ -31,6 +33,7 @@ export class Shape {
         this.width = width;
         this.height = height;
         this.translation = new Point(0, 0);
+        this.idNum = (+new Date()) + (++Shape.IdSeed).toString();
     }
 
     copy():Shape {
@@ -47,7 +50,7 @@ export class Shape {
     }
 
     isWithin(point: Point, margin:number=0) {
-        point = this.transformPoint(point)
+        point = this.transformPoint(point);
         return point.x>=-margin && point.x<=this.width+margin &&
                point.y>=-margin && point.y<=this.height+margin;
     }
@@ -63,8 +66,8 @@ export class Shape {
 
     transformPoint(point:Point) {
         let tPoint = point.copy();
-        let absAnchorat = this.getAbsAnchorAt();
-        tPoint.translate(-absAnchorat.x, -absAnchorat.y);
+        let absAnchorAt = this.getAbsAnchorAt();
+        tPoint.translate(-absAnchorAt.x, -absAnchorAt.y);
         tPoint.scale(1./this.scaleX, 1./this.scaleY);
         tPoint.rotateCoordinate(this.angle);
         tPoint.scale(1./this.postScaleX, 1./this.postScaleY);
@@ -74,9 +77,10 @@ export class Shape {
 
     moveTo(point:Point) {
         let absAnchorAt = this.getAbsAnchorAt();
-        point.translate(-absAnchorAt.x, -absAnchorAt.y)
-        this.translation.x += point.x;
-        this.translation.y += point.y;
+        let tPoint = point.copy();
+        tPoint.translate(-absAnchorAt.x, -absAnchorAt.y)
+        this.translation.x += tPoint.x;
+        this.translation.y += tPoint.y;
     }
 
     preDraw(ctx, rootShape = null) {

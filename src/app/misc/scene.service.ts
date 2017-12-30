@@ -17,6 +17,7 @@ export class SceneService {
 
     let scene = this.scenes[0];
     let rectShape1 = RectangleShape.create(100, 100, "#FF0000", "#00FF00", 10);
+    rectShape1.moveTo(new Point(0, 0));
     scene.addShape(rectShape1);
 
     let rectShape2 = RectangleShape.create(100, 100, "#FF0000", "#0000FF", 20);

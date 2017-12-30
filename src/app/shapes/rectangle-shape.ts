@@ -27,8 +27,6 @@ export class RectangleShape extends Shape {
     }
 
     drawPath(ctx) {
-        drawRoundedRectangle(ctx,
-            this.translation.x, this.translation.y,
-            this.width, this.height, this.corner);
+        drawRoundedRectangle(ctx,0, 0, this.width, this.height, this.corner);
     }
 }

@@ -17,16 +17,17 @@ export class Scene {
 
     selectItemAt(point:Point) {
         let foundShape:Shape = null;
-        for(let shape of this.containerShape.shapes) {
+        for(let i=this.containerShape.shapes.length-1; i>=0; i--) {
+            let shape = this.containerShape.shapes[i];
             if (shape.isWithin(point)) {
                 foundShape = shape;
+                break;
             }
         }
         this.initShape = null;
         if (!!foundShape) {
             this.initShape = foundShape.copy();
         }
-        console.log(foundShape, point);
         this.selectedShape = foundShape;
     }
 
@@ -34,6 +35,7 @@ export class Scene {
         if (!this.selectedShape) return;
         let absAnchorAt = this.initShape.getAbsAnchorAt();
         absAnchorAt.translate(diffPoint.x, diffPoint.y);
+        console.log("absAnchorAt", absAnchorAt);
         this.selectedShape.moveTo(absAnchorAt);
     }
 
