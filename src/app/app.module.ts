@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 
 import { AppComponent } from './app.component';
@@ -13,7 +14,8 @@ import { SceneService } from './misc/scene.service';
 import { ToolService } from './layout/tool.service';
 import { ToolButtonComponent } from './layout/tool-button/tool-button.component';
 import { MaterialModule} from './material.module';
-import { SceneEditorComponent } from './layout/scene-editor/scene-editor.component'
+import { SceneEditorComponent } from './layout/scene-editor/scene-editor.component';
+import { MpFileService } from './misc/mpfile.service'
 
 @NgModule({
   declarations: [
@@ -29,9 +31,10 @@ import { SceneEditorComponent } from './layout/scene-editor/scene-editor.compone
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     MaterialModule
   ],
-  providers: [SceneService, ToolService],
+  providers: [SceneService, ToolService, MpFileService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

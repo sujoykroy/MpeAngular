@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Scene } from './scene';
 import { Point } from '../commons';
 import { RectangleShape } from '../shapes'
+import { MpFileService } from './mpfile.service';
 
 @Injectable()
 export class SceneService {
@@ -10,10 +11,12 @@ export class SceneService {
   activeScene:Scene;
   sceneSize:Point = new Point(1280, 720);
 
-  constructor() {
+  constructor(private mpFileService: MpFileService) {
     for(let i =0; i<5; i++) {
         this.createScene();
     }
+
+    this.mpFileService.getFile("http://localhost:3000/mp_file/sample.json");
 
     let scene = this.scenes[0];
     let rectShape1 = RectangleShape.create(100, 100, "#FF0000", "#00FF00", 10);
