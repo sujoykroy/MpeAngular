@@ -8,7 +8,7 @@ export function copyObject(object) {
     return object;
 }
 
-export function drawRoundedRectangle(ctx, x, y, w, h, r) {
+export function drawRoundedRectangle(ctx, x, y, w, h, r=0) {
     ctx.beginPath();
     ctx.moveTo(x+r,y);
     ctx.lineTo(x+w-r,y);

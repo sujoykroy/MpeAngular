@@ -45,4 +45,10 @@ export class Point {
         diffPoint.y -= other.y;
         return diffPoint;
     }
+
+    distance(other: Point) {
+        let dx: number = this.x-other.x;
+        let dy: number = this.y - other.y;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
 }

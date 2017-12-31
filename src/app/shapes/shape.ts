@@ -75,6 +75,38 @@ export class Shape {
         return tPoint;
     }
 
+    reverseTransformPoint(point:Point) {
+        let tPoint = point.copy();
+        tPoint.translate(-this.anchorAt.x, -this.anchorAt.y);
+        tPoint.scale(this.postScaleX, this.postScaleY);
+        tPoint.rotateCoordinate(-this.angle);
+        tPoint.scale(this.scaleX, this.scaleY);
+        let absAnchorAt = this.getAbsAnchorAt();
+        tPoint.translate(absAnchorAt.x, absAnchorAt.y);
+        return tPoint;
+    }
+
+    getAbsReverseTransformPoint(point:Point, rootShape:Shape = null) {
+        let tPoint = this.reverseTransformPoint(point);
+        if (this.parentShape && this.parentShape != rootShape) {
+            tPoint = this.parentShape.getAbsReverseTransformPoint(point, rootShape=rootShape);
+        }
+        return tPoint;
+    }
+
+    getAbsAngle(angle:number) {
+        let points = [new Point(0,0), new Point(1, 0)];
+        points[1].rotateCoordinate(angle);
+        let shape:Shape = this;
+        while (shape) {
+            points[0] = shape.reverseTransformPoint(points[0]);
+            points[1] = shape.reverseTransformPoint(points[1]);
+            shape = shape.parentShape;
+        }
+        let diffPoint = points[1].diff(points[0]);
+        return Math.atan2(diffPoint.y, diffPoint.x)*180*Math.PI;
+    }
+
     moveTo(point:Point) {
         let absAnchorAt = this.getAbsAnchorAt();
         let tPoint = point.copy();
