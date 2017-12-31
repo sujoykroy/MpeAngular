@@ -46,6 +46,7 @@ export class Shape {
         //other.fillColor = copyObject(this.fillColor);
         //other.width = this.width;
         //other.height = this.height;
+        other.angle = this.angle;
         other.translation.copyFrom(this.translation);
     }
 
@@ -104,7 +105,7 @@ export class Shape {
             shape = shape.parentShape;
         }
         let diffPoint = points[1].diff(points[0]);
-        return Math.atan2(diffPoint.y, diffPoint.x)*180*Math.PI;
+        return Math.atan2(diffPoint.y, diffPoint.x)*180/Math.PI;
     }
 
     moveTo(point:Point) {
@@ -113,6 +114,50 @@ export class Shape {
         tPoint.translate(-absAnchorAt.x, -absAnchorAt.y)
         this.translation.x += tPoint.x;
         this.translation.y += tPoint.y;
+    }
+
+    setHeight(value, fixedAnchor:boolean=true) {
+        value = parseFloat(value);
+        if (value == 0) {
+            value = 0.00001;
+        }
+        if (value>0) {
+            let oldHeight = this.height;
+            this.height = value;
+            if (fixedAnchor) {
+                let absAnchorAt = this.getAbsAnchorAt();
+                this.anchorAt.y *= value/oldHeight;
+                this.moveTo(absAnchorAt);
+            }
+        }
+    }
+
+    setWidth(value, fixedAnchor:boolean=true) {
+        value = parseFloat(value);
+        if (value == 0) {
+            value = 0.00001;
+        }
+        if (value>0) {
+            let oldWidth = this.width;
+            this.width = value;
+            if (fixedAnchor) {
+                let absAnchorAt = this.getAbsAnchorAt();
+                this.anchorAt.x *= value/oldWidth;
+                this.moveTo(absAnchorAt);
+            }
+        }
+    }
+
+    setAngle(angle:number) {
+        let relLeftTopCorner = new Point(-this.anchorAt.x, -this.anchorAt.y);
+        relLeftTopCorner.scale(this.postScaleX, this.postScaleY);
+        relLeftTopCorner.rotateCoordinate(-angle);
+        relLeftTopCorner.scale(this.scaleX, this.scaleY);
+        let absAnchor = this.getAbsAnchorAt();
+        relLeftTopCorner.translate(absAnchor.x, absAnchor.y);
+        this.angle = angle;
+        this.translation.x = relLeftTopCorner.x;
+        this.translation.y = relLeftTopCorner.y;
     }
 
     preDraw(ctx, rootShape = null) {

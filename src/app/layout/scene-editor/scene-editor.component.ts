@@ -60,6 +60,7 @@ export class SceneEditorComponent implements OnInit {
     @HostListener("mouseup", ["$event"])
         onMouseUp(event) {
         this.mouseIsDown = false;
+        this.shapeEditor.reload();
     }
 
     selectItemAt(point:Point) {
