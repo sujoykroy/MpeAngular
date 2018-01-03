@@ -3,7 +3,7 @@ import { Color, copyObject, Point } from '../commons'
 import { drawRoundedRectangle } from '../commons'
 
 export class RectangleShape extends Shape {
-    corner: number;
+    cornerRadius: number;
 
     static create(width:number, height:number,
                   borderColor:any, fillColor:any, radius:number=0) {
@@ -14,20 +14,31 @@ export class RectangleShape extends Shape {
 
     constructor(
         anchorAt:Point, borderColor:Color, fillColor:Color,
-        width:number, height: number, corner:number) {
+        width:number, height: number, cornerRadius:number) {
         super(anchorAt, borderColor, fillColor, width, height);
-        this.corner = corner;
+        this.cornerRadius = cornerRadius;
     }
 
-    copy() {
+    static createFromJson(jsonData) {
+        let newOb = new RectangleShape(null, null, null, 0, 0, 0);
+        newOb.copyFromJson(jsonData);
+        return newOb;
+    }
+
+    copyFromJson(jsonData) {
+        super.copyFromJson(jsonData);
+        this.cornerRadius = parseFloat(jsonData.corner_radius);
+    }
+
+    copy(deepCopy:boolean = false) {
         let newOb = new RectangleShape(
             this.anchorAt, this.borderColor, this.fillColor,
-            this.width, this.height, this.corner);
+            this.width, this.height, this.cornerRadius);
         this.copyInto(newOb);
         return newOb;
     }
 
     drawPath(ctx) {
-        drawRoundedRectangle(ctx,0, 0, this.width, this.height, this.corner);
+        drawRoundedRectangle(ctx,0, 0, this.width, this.height, this.cornerRadius);
     }
 }

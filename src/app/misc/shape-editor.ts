@@ -302,7 +302,6 @@ export class ShapeEditor {
         this.resizeBoxTop.setCenter(points[5]);
         this.resizeBoxRight.setCenter(points[6]);
         this.resizeBoxBottom.setCenter(points[7]);
-
         this.anchorBox.setCenter(points[8]);
     }
 }

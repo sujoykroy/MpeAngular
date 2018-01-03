@@ -55,4 +55,20 @@ export class Point {
     getAngle() {
         return Math.atan2(this.y, this.x)*180/Math.PI;
     }
+
+    static parse(data) {
+        let point = new Point(0, 0);
+        if (typeof(data) == "string") {
+            let arr:any[] = data.split(",");
+            point.x = parseFloat(arr[0]);
+            point.y = parseFloat(arr[1]);
+        } else if (data instanceof Point) {
+            point.copyFrom(data);
+        }
+        return point;
+    }
+
+    static createFromJson(jsonData) {
+        return Point.parse(jsonData.p);
+    }
 }

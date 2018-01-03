@@ -22,7 +22,9 @@ export class Shape {
     visible: boolean = true;
 
     idNum: string;
+    name: string;
     parentShape: Shape;
+    renderable = true;
 
     constructor(
         anchorAt:Point, borderColor:any, fillColor:any,
@@ -36,18 +38,34 @@ export class Shape {
         this.idNum = (+new Date()) + (++Shape.IdSeed).toString();
     }
 
-    copy():Shape {
+    copy(deepCopy:boolean = false):Shape {
         return null;
     }
 
     copyInto(other: Shape) {
-        //other.anchorAt = copyObject(this.anchorAt);
-        //other.borderColor = copyObject(this.borderColor);
-        //other.fillColor = copyObject(this.fillColor);
-        //other.width = this.width;
-        //other.height = this.height;
+        other.name = this.name;
         other.angle = this.angle;
         other.translation.copyFrom(this.translation);
+    }
+
+    copyFromJson(jsonData) {
+        this.name = jsonData.name;
+        this.anchorAt = Point.parse(jsonData.anchor_at);
+        this.translation = Point.parse(jsonData.translation);
+
+        this.borderColor = parseColor(jsonData.border_color);
+        this.borderWidth = parseFloat(jsonData.border_width);
+        this.fillColor = parseColor(jsonData.fill_color);
+
+        this.width = parseFloat(jsonData.width);
+        this.height = parseFloat(jsonData.height);
+        this.angle = parseFloat(jsonData.angle);
+
+        this.postScaleX = parseFloat(jsonData.post_scale_x);
+        this.postScaleY = parseFloat(jsonData.post_scale_y);
+
+        this.scaleX = parseFloat(jsonData.scale_x);
+        this.scaleY = parseFloat(jsonData.scale_y);
     }
 
     isWithin(point: Point, margin:number=0) {
@@ -66,33 +84,33 @@ export class Shape {
     }
 
     transformPoint(point:Point) {
-        let tPoint = point.copy();
+        point = point.copy();
         let absAnchorAt = this.getAbsAnchorAt();
-        tPoint.translate(-absAnchorAt.x, -absAnchorAt.y);
-        tPoint.scale(1./this.scaleX, 1./this.scaleY);
-        tPoint.rotateCoordinate(this.angle);
-        tPoint.scale(1./this.postScaleX, 1./this.postScaleY);
-        tPoint.translate(this.anchorAt.x, this.anchorAt.y);
-        return tPoint;
+        point.translate(-absAnchorAt.x, -absAnchorAt.y);
+        point.scale(1./this.scaleX, 1./this.scaleY);
+        point.rotateCoordinate(this.angle);
+        point.scale(1./this.postScaleX, 1./this.postScaleY);
+        point.translate(this.anchorAt.x, this.anchorAt.y);
+        return point;
     }
 
     reverseTransformPoint(point:Point) {
-        let tPoint = point.copy();
-        tPoint.translate(-this.anchorAt.x, -this.anchorAt.y);
-        tPoint.scale(this.postScaleX, this.postScaleY);
-        tPoint.rotateCoordinate(-this.angle);
-        tPoint.scale(this.scaleX, this.scaleY);
+        point = point.copy();
+        point.translate(-this.anchorAt.x, -this.anchorAt.y);
+        point.scale(this.postScaleX, this.postScaleY);
+        point.rotateCoordinate(-this.angle);
+        point.scale(this.scaleX, this.scaleY);
         let absAnchorAt = this.getAbsAnchorAt();
-        tPoint.translate(absAnchorAt.x, absAnchorAt.y);
-        return tPoint;
+        point.translate(absAnchorAt.x, absAnchorAt.y);
+        return point;
     }
 
     getAbsReverseTransformPoint(point:Point, rootShape:Shape = null) {
-        let tPoint = this.reverseTransformPoint(point);
+        point = this.reverseTransformPoint(point);
         if (this.parentShape && this.parentShape != rootShape) {
-            tPoint = this.parentShape.getAbsReverseTransformPoint(point, rootShape=rootShape);
+            point = this.parentShape.getAbsReverseTransformPoint(point, rootShape=rootShape);
         }
-        return tPoint;
+        return point;
     }
 
     getAbsAngle(angle:number) {
@@ -110,10 +128,14 @@ export class Shape {
 
     moveTo(point:Point) {
         let absAnchorAt = this.getAbsAnchorAt();
-        let tPoint = point.copy();
-        tPoint.translate(-absAnchorAt.x, -absAnchorAt.y)
-        this.translation.x += tPoint.x;
-        this.translation.y += tPoint.y;
+        point = point.copy();
+        point.translate(-absAnchorAt.x, -absAnchorAt.y)
+        this.translation.x += point.x;
+        this.translation.y += point.y;
+    }
+
+    setParentShape(shape:Shape) {
+        this.parentShape = shape;
     }
 
     setHeight(value, fixedAnchor:boolean=true) {
@@ -166,7 +188,8 @@ export class Shape {
         }
         ctx.translate(this.translation.x, this.translation.y);
         ctx.scale(this.scaleX, this.scaleY);
-        ctx.rotate(this.angle*Math.PI/180)
+        ctx.rotate(this.angle*Math.PI/180);
+        ctx.scale(this.postScaleX, this.postScaleY)
     }
 
     drawBorder(ctx) {
@@ -178,8 +201,9 @@ export class Shape {
 
     drawFill(ctx) {
         if (!this.fillColor) return;
+        ctx.mozFillRule = 'evenodd';
         ctx.fillStyle = this.fillColor.getStyleValue();
-        ctx.fill();
+        ctx.fill("evenodd");
     }
 
     hasBorder() {

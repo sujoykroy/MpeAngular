@@ -5,9 +5,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class MpFileService {
     constructor(private http: HttpClient) {}
 
-    getFile(path) {
+    getFile(path, callback) {
         this.http.get(path, {responseType: 'json'}).subscribe(data=>{
-            console.log(data);
+            callback(data);
         });
     }
 }

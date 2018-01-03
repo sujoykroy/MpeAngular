@@ -6,48 +6,51 @@ import { MpFileService } from './mpfile.service';
 
 @Injectable()
 export class SceneService {
-  scenes: Scene[] = [];
-  sceneIdSeed = 0;
-  activeScene:Scene;
-  sceneSize:Point = new Point(1280, 720);
+    scenes: Scene[] = [];
+    sceneIdSeed = 0;
+    activeScene:Scene;
+    sceneSize:Point = new Point(1280, 720);
 
-  constructor(private mpFileService: MpFileService) {
-    for(let i =0; i<5; i++) {
-        this.createScene();
+    constructor(private mpFileService: MpFileService) {
+        for(let i =0; i<5; i++) {
+            this.createScene();
+        }
+
+        let scene = this.scenes[0];
+        let rectShape1 = RectangleShape.create(100, 100, "#FF0000", "#00FF00", 10);
+        rectShape1.moveTo(new Point(0, 0));
+        //scene.addShape(rectShape1);
+
+        let rectShape2 = RectangleShape.create(100, 100, "#FF0000", "#0000FF", 20);
+        rectShape2.moveTo(new Point(100, 100));
+        //scene.addShape(rectShape2);
+
+        this.mpFileService.getFile(
+            "http://localhost:3000/mp_file/sample.json", (data) => {
+                scene.importFromJson(data);
+        });
     }
 
-    this.mpFileService.getFile("http://localhost:3000/mp_file/sample.json");
+    createScene(): Scene {
+        let scene = new Scene(++this.sceneIdSeed, this.sceneSize);
+        this.scenes.push(scene);
+        return scene;
+    }
 
-    let scene = this.scenes[0];
-    let rectShape1 = RectangleShape.create(100, 100, "#FF0000", "#00FF00", 10);
-    rectShape1.moveTo(new Point(0, 0));
-    scene.addShape(rectShape1);
+    setActiveScene(scene:Scene) {
+        this.activeScene = scene;
+    }
 
-    let rectShape2 = RectangleShape.create(100, 100, "#FF0000", "#0000FF", 20);
-    rectShape2.moveTo(new Point(100, 100));
-    scene.addShape(rectShape2);
-  }
+    isActiveScene(scene: Scene) {
+        return this.activeScene && this.activeScene.equals(scene);
+    }
 
-  createScene(): Scene {
-    let scene = new Scene(++this.sceneIdSeed, this.sceneSize);
-    this.scenes.push(scene);
-    return scene;
-  }
+    getScenes() {
+        return this.scenes;
+    }
 
-  setActiveScene(scene:Scene) {
-    this.activeScene = scene;
-  }
-
-  isActiveScene(scene: Scene) {
-    return this.activeScene && this.activeScene.equals(scene);
-  }
-
-  getScenes() {
-    return this.scenes;
-  }
-
-  getActiveScene() {
+    getActiveScene() {
     return this.activeScene || this.scenes[0];
-  }
+    }
 
 }

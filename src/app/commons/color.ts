@@ -34,13 +34,30 @@ export class Color {
         let alpha = text.length>6 ? parseInt(text.substr(6, 2), 16)/255.0 : 1;
         return new Color(red, green, blue, alpha);
     }
+
+    static parse(data) {
+        let color = new Color(1, 1, 1, 1);
+        if (typeof(data) == "string") {
+            let arr:any[] = data.split(",");
+            for(let i=0; i<arr.length; i++) {
+                arr[i] = parseFloat(arr[i]);
+            }
+            color.red = arr[0];
+            color.green = arr[1];
+            color.blue   = arr[2];
+            color.alpha = arr[3];
+        }
+        return color;
+    }
 }
 
 export function parseColor(item:any) {
-    if (!item) return item;
+    if (!item) return null;
     if (typeof item == "string") {
         if (item.substr(0,1) == "#") {
             return Color.createFromHtml(item);
+        } else {
+            return Color.parse(item);
         }
     }
     if (item instanceof Color) {

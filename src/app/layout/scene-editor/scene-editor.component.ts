@@ -58,7 +58,7 @@ export class SceneEditorComponent implements OnInit {
     }
 
     @HostListener("mouseup", ["$event"])
-        onMouseUp(event) {
+    onMouseUp(event) {
         this.mouseIsDown = false;
         this.shapeEditor.reload();
     }
@@ -121,7 +121,6 @@ export class SceneEditorComponent implements OnInit {
         ctx.shadowBlur=0;
         ctx.scale(this.sceneScale, this.sceneScale);
         scene.draw(ctx)
-
 
         this.shapeEditor.draw(ctx);
         ctx.restore();
