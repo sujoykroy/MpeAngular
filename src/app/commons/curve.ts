@@ -34,4 +34,20 @@ export class Curve {
                 bezierPoint.dest.x, bezierPoint.dest.y);
         }
     }
+
+    static createOval() {
+        let oval = new Curve(new Point(1, 0.5));
+        oval.closed = true;
+        let k = 0.5522847498*0.5;
+        let bezierPoints = [
+            new BezierPoint(new Point(1, 0.5+k), new Point(0.5+k, 1), new Point(0.5, 1)),
+            new BezierPoint(new Point(0.5-k, 1), new Point(0, 0.5+k), new Point(0, 0.5)),
+            new BezierPoint(new Point(0, 0.5-k), new Point(0.5-k, 0), new Point(0.5, 0)),
+            new BezierPoint(new Point(0.5+k, 0), new Point(1, 0.5-k), new Point(1, 0.5))
+        ];
+        for(let bzp of bezierPoints) {
+            oval.bezierPoints.push(bzp);
+        }
+        return oval;
+    }
 }

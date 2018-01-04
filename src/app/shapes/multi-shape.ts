@@ -1,5 +1,6 @@
 import { Shape } from './shape';
 import { RectangleShape } from './rectangle-shape';
+import { OvalShape } from './oval-shape';
 import { PolygonShape } from './polygon-shape';
 import { CurveShape } from './curve-shape';
 import { CurveJoinerShape } from './curve-joiner-shape';
@@ -20,6 +21,7 @@ export class MultiShape extends Shape {
     static createFromJson(jsonData) {
         let newOb = new MultiShape(null, null, null, 0, 0);
         newOb.copyFromJson(jsonData);
+        newOb.masked = (jsonData.masked == "True");
         let shape:Shape;
         for(let shapeData of jsonData.shape) {
             shape = null;
@@ -30,11 +32,17 @@ export class MultiShape extends Shape {
                 case "rectangle":
                     shape = RectangleShape.createFromJson(shapeData);
                     break;
+                case "oval":
+                    shape = OvalShape.createFromJson(shapeData);
+                    break;
                 case "polygon_shape":
                     shape = PolygonShape.createFromJson(shapeData);
                     break;
                 case "curve_shape":
                     shape = CurveShape.createFromJson(shapeData);
+                    break;
+                case "text":
+                    shape = TextShape.createFromJson(shapeData);
                     break;
             }
             if (shape) {
@@ -67,6 +75,9 @@ export class MultiShape extends Shape {
     static drawShape(shape, ctx, drawingSize=null,
                                  fixedBorder=true, rootShape=null, showNonRenderable=false) {
         if (shape instanceof MultiShape) {
+            if (!drawingSize) {
+                drawingSize = new Point(shape.width, shape.height);
+            }
             let multiShape = shape;
             if (multiShape.hasFill()) {
                 ctx.save()
@@ -115,7 +126,7 @@ export class MultiShape extends Shape {
                 ctx = origCtx;
                 let maskingCanvas;
                 let maskingCtx;
-                if (lastShape.hasFill()) {
+                if (!lastShape.hasFill()) {
                     maskingCanvas = document.createElement("canvas");
                     maskingCanvas.width = drawingSize.x;
                     maskingCanvas.height = drawingSize.y;
@@ -129,12 +140,13 @@ export class MultiShape extends Shape {
                     lastShape.preDraw(ctx, rootShape);
                     lastShape.drawPath(ctx);
                     ctx.clip();
-                    ctx.drawImage(maskedCanvas);
+                    ctx.drawImage(maskedCanvas, 0, 0);
                     ctx.restore();
+                    console.log("ste p1", lastShape.renderable);
                 } else {
                     maskingCtx.globalCompositeOperation = "source-in";
-                    maskingCtx.drawImage(maskedCanvas);
-                    ctx.drawImage(maskingCanvas);
+                    maskingCtx.drawImage(maskedCanvas, 0, 0);
+                    ctx.drawImage(maskingCanvas, 0, 0);
                 }
 
                 if (lastShape.renderable || showNonRenderable) {
@@ -185,7 +197,6 @@ export class MultiShape extends Shape {
             if (shape instanceof TextShape) {
                 ctx.save();
                 shape.preDraw(ctx, rootShape);
-                shape.drawPath(ctx);
                 shape.drawText(ctx);
                 ctx.restore();
             }

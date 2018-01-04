@@ -15,7 +15,6 @@ export class CurveShape extends Shape {
             curve = Curve.createFromJson(curve);
             newOb.curves.push(curve);
         }
-        console.log(newOb);
         return newOb;
     }
 

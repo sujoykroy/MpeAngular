@@ -66,6 +66,8 @@ export class Shape {
 
         this.scaleX = parseFloat(jsonData.scale_x);
         this.scaleY = parseFloat(jsonData.scale_y);
+
+        this.renderable = !(jsonData.renderable == "0");
     }
 
     isWithin(point: Point, margin:number=0) {
