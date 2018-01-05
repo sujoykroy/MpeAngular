@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import { HostListener,  ViewContainerRef, EventEmitter} from '@angular/core';
 import { Scene } from '../../misc/scene';
 import { SceneService } from '../../misc/scene.service';
-import { Point } from '../../commons';
+import { Point, extendCtx } from '../../commons';
 import { ShapeEditor } from '../../misc/shape-editor';
 import { Shape } from '../../shapes';
 
@@ -103,6 +103,7 @@ export class SceneEditorComponent implements OnInit {
     draw() {
         let canvas = this.thumbCanvasElem.nativeElement;
         let ctx = canvas.getContext("2d");
+        extendCtx(ctx);
         let scene = this.sceneService.getActiveScene();
         if (!scene) {
             return;

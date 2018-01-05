@@ -8,7 +8,7 @@ import { MimicShape } from './mimic-shape';
 import { ImageShape } from './image-shape';
 import { VideoShape } from './video-shape';
 import { TextShape } from './text-shape';
-import { Color, copyObject, Point } from '../commons';
+import { Color, copyObject, Point, extendCtx } from '../commons';
 
 export class MultiShape extends Shape {
     shapes:Shape[] = []
@@ -97,9 +97,10 @@ export class MultiShape extends Shape {
                 maskedCanvas = document.createElement("canvas");
                 maskedCanvas.width = drawingSize.x;
                 maskedCanvas.height = drawingSize.y;
-                maskedCtx = maskedCanvas.getContext("2d");
+                maskedCtx = extendCtx(maskedCanvas.getContext("2d"));
                 origCtx = ctx;
                 ctx = maskedCtx;
+                maskedCtx.setTransMatrix(origCtx.getTransMatrix());
             }
 
             let lastShape = null;
@@ -130,23 +131,26 @@ export class MultiShape extends Shape {
                     maskingCanvas = document.createElement("canvas");
                     maskingCanvas.width = drawingSize.x;
                     maskingCanvas.height = drawingSize.y;
-                    maskingCtx = maskingCanvas.getContext("2d");
+                    maskingCtx = extendCtx(maskingCanvas.getContext("2d"));
                     MultiShape.drawShape(lastShape, maskingCtx, drawingSize,
                             fixedBorder, rootShape, displayNonRenderable);
                 }
 
                 if (!maskingCanvas) {
+                    ctx.save();
                     ctx.save()
                     lastShape.preDraw(ctx, rootShape);
                     lastShape.drawPath(ctx);
+                    ctx.restore();
                     ctx.clip();
                     ctx.drawImage(maskedCanvas, 0, 0);
                     ctx.restore();
-                    console.log("ste p1", lastShape.renderable);
                 } else {
+                    ctx.save();
                     maskingCtx.globalCompositeOperation = "source-in";
                     maskingCtx.drawImage(maskedCanvas, 0, 0);
                     ctx.drawImage(maskingCanvas, 0, 0);
+                    ctx.restore();
                 }
 
                 if (lastShape.renderable || showNonRenderable) {

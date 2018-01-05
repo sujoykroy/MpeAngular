@@ -3,3 +3,4 @@ export {Color, parseColor} from './color';
 export * from './utils';
 export { Polygon } from './polygon';
 export { Curve } from './curve';
+export { extendCtx } from './ctx-wrapper';
