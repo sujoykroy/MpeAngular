@@ -3,6 +3,8 @@ import { Color, copyObject, Point } from '../commons'
 import { drawRoundedRectangle } from '../commons'
 
 export class RectangleShape extends Shape {
+    static TypeName = "rectangle";
+
     cornerRadius: number;
 
     static create(width:number, height:number,
@@ -28,6 +30,16 @@ export class RectangleShape extends Shape {
     copyFromJson(jsonData) {
         super.copyFromJson(jsonData);
         this.cornerRadius = parseFloat(jsonData.corner_radius);
+    }
+
+    getTypeName() {
+        return RectangleShape.TypeName;
+    }
+
+    toJsonOb() {
+        let jsonOb:any = super.toJsonOb();
+        jsonOb.corner_radius = this.cornerRadius
+        return jsonOb;
     }
 
     copy(deepCopy:boolean = false) {

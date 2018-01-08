@@ -14,6 +14,15 @@ export class Polygon {
         return polygon;
     }
 
+    toJsonOb() {
+        let jsonOb:any = {};
+        jsonOb.point = [];
+        for(let point of this.points) {
+            jsonOb.point.push(point.toJsonOb());
+        }
+        return jsonOb;
+    }
+
     drawPath(ctx) {
         for (let pi=0; pi<this.points.length; pi++) {
             let point = this.points[pi];

@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 
+
+
 import { AppComponent } from './app.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { HeaderComponent } from './layout/header/header.component';
@@ -15,7 +17,10 @@ import { ToolService } from './layout/tool.service';
 import { ToolButtonComponent } from './layout/tool-button/tool-button.component';
 import { MaterialModule} from './material.module';
 import { SceneEditorComponent } from './layout/scene-editor/scene-editor.component';
-import { MpFileService } from './misc/mpfile.service'
+import { MpFileService } from './misc/mpfile.service';
+import { ShapeThumbComponent } from './layout/shape-thumb/shape-thumb.component'
+
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -27,12 +32,14 @@ import { MpFileService } from './misc/mpfile.service'
     VerticalBarComponent,
     SceneThumbComponent,
     ToolButtonComponent,
-    SceneEditorComponent
+    SceneEditorComponent,
+    ShapeThumbComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    MaterialModule
+    MaterialModule,
+    BrowserAnimationsModule
   ],
   providers: [SceneService, ToolService, MpFileService],
   bootstrap: [AppComponent]

@@ -56,6 +56,16 @@ export class Point {
         return Math.atan2(this.y, this.x)*180/Math.PI;
     }
 
+    toText() {
+        return this.x.toString() + "," + this.y.toString();
+    }
+
+    toJsonOb() {
+        let jsonOb:any = {};
+        jsonOb.p = this.toText();
+        return jsonOb;
+    }
+
     static parse(data) {
         let point = new Point(0, 0);
         if (typeof(data) == "string") {

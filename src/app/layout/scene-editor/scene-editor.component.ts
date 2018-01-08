@@ -4,7 +4,7 @@ import { Scene } from '../../misc/scene';
 import { SceneService } from '../../misc/scene.service';
 import { Point, extendCtx } from '../../commons';
 import { ShapeEditor } from '../../misc/shape-editor';
-import { Shape } from '../../shapes';
+import { Shape, MultiShape } from '../../shapes';
 
 @Component({
   selector: 'scene-editor',
@@ -53,6 +53,37 @@ export class SceneEditorComponent implements OnInit {
         this.transformMousePoints(this.mousePos);
         if (this.mouseIsDown) {
             this.shapeEditor.moveActiveItem(this.mouseInitPos, this.mousePos);
+            this.draw();
+        }
+    }
+
+    @HostListener("dragover", ["$event"])
+    onDragOver(event) {
+        event.preventDefault();
+    }
+
+    @HostListener("drop", ["$event"])
+    onDrop(event) {
+        event.stopPropagation();
+        let shapeTemplate = event.dataTransfer.getData("shapeTemplate");
+
+        if(shapeTemplate) {
+            let scene = this.sceneService.getActiveScene();
+            let jsonData = JSON.parse(shapeTemplate);
+            let rootShape = jsonData.root.shape;
+
+            let shape;
+            if (rootShape.shape instanceof Array) {
+                shape = MultiShape.getShapeFromJson(rootShape);
+            } else {
+                shape = MultiShape.getShapeFromJson(rootShape.shape);
+            }
+            scene.addShape(shape);
+
+            let point = new Point(event.layerX, event.layerY);
+            this.transformMousePoints(point);
+            shape.moveTo(point);
+
             this.draw();
         }
     }

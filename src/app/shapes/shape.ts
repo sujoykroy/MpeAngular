@@ -1,4 +1,4 @@
-import {Point, Color, copyObject, parseColor} from '../commons'
+import {Point, Color, copyObject, parseColor, extendCtx } from '../commons'
 
 export class Shape {
     static IdSeed:number = 0;
@@ -38,6 +38,10 @@ export class Shape {
         this.idNum = (+new Date()) + (++Shape.IdSeed).toString();
     }
 
+    getTypeName() {
+        return "shape";
+    }
+
     copy(deepCopy:boolean = false):Shape {
         return null;
     }
@@ -68,6 +72,30 @@ export class Shape {
         this.scaleY = parseFloat(jsonData.scale_y);
 
         this.renderable = !(jsonData.renderable == "0");
+    }
+
+    toJsonOb() {
+        let jsonOb:any = { type: this.getTypeName() };
+        jsonOb.anchor_at = this.anchorAt.toText();
+        jsonOb.translation = this.translation.toText();
+        if(this.borderColor) {
+            jsonOb.border_color = this.borderColor.toText();
+        }
+        jsonOb.border_width = this.borderWidth;
+        if(this.fillColor) {
+            jsonOb.fill_color = this.fillColor.toText();
+        }
+        jsonOb.width = this.width;
+        jsonOb.height = this.height;
+        jsonOb.angle = this.angle;
+        jsonOb.post_scale_x = this.postScaleX;
+        jsonOb.post_scale_y = this.postScaleY;
+        jsonOb.scale_x = this.scaleX;
+        jsonOb.scale_y = this.scaleY;
+        if (!this.renderable) {
+            jsonOb.renderable = "0";
+        }
+        return jsonOb;
     }
 
     isWithin(point: Point, margin:number=0) {
@@ -217,5 +245,4 @@ export class Shape {
     }
 
     drawPath(ctx) {}
-
 }

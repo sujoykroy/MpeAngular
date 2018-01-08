@@ -7,7 +7,6 @@ import { MpFileService } from './mpfile.service';
 @Injectable()
 export class SceneService {
     scenes: Scene[] = [];
-    sceneIdSeed = 0;
     activeScene:Scene;
     sceneSize:Point = new Point(1280, 720);
 
@@ -31,8 +30,11 @@ export class SceneService {
         });
     }
 
-    createScene(): Scene {
-        let scene = new Scene(++this.sceneIdSeed, this.sceneSize);
+    createScene(size = null): Scene {
+        if (!size) {
+            size = this.sceneSize;
+        }
+        let scene = new Scene(size);
         this.scenes.push(scene);
         return scene;
     }

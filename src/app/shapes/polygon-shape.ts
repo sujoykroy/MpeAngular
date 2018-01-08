@@ -3,6 +3,7 @@ import { Polygon } from '../commons';
 
 
 export class PolygonShape extends Shape {
+    static TypeName = "polygon_shape";
     polygons: Polygon[] = [];
 
     static createFromJson(jsonData) {
@@ -17,6 +18,19 @@ export class PolygonShape extends Shape {
             newOb.polygons.push(polygon);
         }
         return newOb;
+    }
+
+    getTypeName() {
+        return PolygonShape.TypeName;
+    }
+
+    toJsonOb() {
+        let jsonOb:any = super.toJsonOb();
+        jsonOb.polygon = [];
+        for(let polygon of this.polygons) {
+            jsonOb.polygon.push(polygon.toJsonOb());
+        }
+        return jsonOb;
     }
 
     drawPath(ctx) {

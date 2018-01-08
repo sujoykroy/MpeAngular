@@ -10,6 +10,14 @@ class BezierPoint {
                         Point.parse(jsonData.d)
                 );
     }
+
+    toJsonOb() {
+        let jsonOb:any = {};
+        jsonOb.c1 = this.control1.toText();
+        jsonOb.c2 = this.control2.toText();
+        jsonOb.d = this.dest.toText();
+        return jsonOb;
+    }
 }
 
 export class Curve {
@@ -23,6 +31,16 @@ export class Curve {
             curve.bezierPoints.push(BezierPoint.createFromJson(bezierPoint));
         }
         return curve;
+    }
+
+    toJsonOb() {
+        let jsonOb:any = {};
+        jsonOb.origin = this.origin.toText();
+        jsonOb.bp = [];
+        for(let bezierPoint of this.bezierPoints) {
+            jsonOb.bp.push(bezierPoint.toJsonOb());
+        }
+        return jsonOb;
     }
 
     drawPath(ctx) {

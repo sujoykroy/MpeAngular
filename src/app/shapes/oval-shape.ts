@@ -2,12 +2,17 @@ import { Shape } from './shape';
 import { Curve } from '../commons';
 
 export class OvalShape extends Shape {
+    static TypeName = "oval";
     static OvalCurve = Curve.createOval();
 
     static createFromJson(jsonData) {
         let newOb = new OvalShape(null, null, null, 0, 0);
         newOb.copyFromJson(jsonData);
         return newOb;
+    }
+
+    getTypeName() {
+        return OvalShape.TypeName;
     }
 
     copy(deepCopy:boolean = false) {

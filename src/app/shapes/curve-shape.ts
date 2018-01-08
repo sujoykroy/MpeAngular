@@ -2,6 +2,7 @@ import { Shape } from './shape';
 import { Curve } from '../commons';
 
 export class CurveShape extends Shape {
+    static TypeName = "curve_shape";
     curves:Curve[] = [];
 
     static createFromJson(jsonData) {
@@ -16,6 +17,20 @@ export class CurveShape extends Shape {
             newOb.curves.push(curve);
         }
         return newOb;
+    }
+
+    getTypeName() {
+        return CurveShape.TypeName;
+    }
+
+    toJsonOb() {
+        let jsonOb:any = super.toJsonOb();
+        jsonOb.type = "curve_shape";
+        jsonOb.curve = [];
+        for(let curve of this.curves) {
+            jsonOb.curve.push(curve.toJsonOb());
+        }
+        return jsonOb;
     }
 
     drawPath(ctx) {

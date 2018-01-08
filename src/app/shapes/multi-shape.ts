@@ -11,6 +11,7 @@ import { TextShape } from './text-shape';
 import { Color, copyObject, Point, extendCtx } from '../commons';
 
 export class MultiShape extends Shape {
+    static TypeName = "multi_shape";
     shapes:Shape[] = []
     masked: boolean = false;
 
@@ -18,38 +19,68 @@ export class MultiShape extends Shape {
         return new MultiShape(new Point(0,0), null, null, width, height);
     }
 
+    static
+    getShapeFromJson(shapeData):Shape {
+        let shape:Shape;
+        switch(shapeData.type) {
+            case MultiShape.TypeName:
+                shape = MultiShape.createFromJson(shapeData);
+                break;
+            case RectangleShape.TypeName:
+                shape = RectangleShape.createFromJson(shapeData);
+                break;
+            case OvalShape.TypeName:
+                shape = OvalShape.createFromJson(shapeData);
+                break;
+            case PolygonShape.TypeName:
+                shape = PolygonShape.createFromJson(shapeData);
+                break;
+            case CurveShape.TypeName:
+                shape = CurveShape.createFromJson(shapeData);
+                break;
+            case TextShape.TypeName:
+                shape = TextShape.createFromJson(shapeData);
+                break;
+        }
+        return shape;
+    }
+
     static createFromJson(jsonData) {
         let newOb = new MultiShape(null, null, null, 0, 0);
         newOb.copyFromJson(jsonData);
         newOb.masked = (jsonData.masked == "True");
-        let shape:Shape;
-        for(let shapeData of jsonData.shape) {
-            shape = null;
-            switch(shapeData.type) {
-                case 'multi_shape':
-                    shape = MultiShape.createFromJson(shapeData);
-                    break;
-                case "rectangle":
-                    shape = RectangleShape.createFromJson(shapeData);
-                    break;
-                case "oval":
-                    shape = OvalShape.createFromJson(shapeData);
-                    break;
-                case "polygon_shape":
-                    shape = PolygonShape.createFromJson(shapeData);
-                    break;
-                case "curve_shape":
-                    shape = CurveShape.createFromJson(shapeData);
-                    break;
-                case "text":
-                    shape = TextShape.createFromJson(shapeData);
-                    break;
-            }
+
+        let shapes = jsonData.shape;
+        if (!(shapes instanceof Array)) {
+            shapes = [ shapes ] ;
+        }
+        for(let shapeData of shapes) {
+            let shape:Shape = MultiShape.getShapeFromJson(shapeData);
             if (shape) {
                 newOb.addShape(shape);
             }
         }
         return newOb;
+    }
+
+    getTypeName() {
+        return MultiShape.TypeName;
+    }
+
+    toJsonOb() {
+        let jsonOb:any = super.toJsonOb();
+        if (jsonOb.masked) {
+            jsonOb.masked = "True";
+        }
+        if (this.shapes.length>1) {
+            jsonOb.shape = [];
+            for(let shape of this.shapes) {
+                jsonOb.shape.push(shape.toJsonOb());
+            }
+        } else {
+            jsonOb.shape = this.shapes[0].toJsonOb();
+        }
+        return jsonOb;
     }
 
     copy(deepCopy:boolean = false):Shape {

@@ -68,6 +68,8 @@ class TextLayout {
 }
 
 export class TextShape extends RectangleShape {
+    static TypeName = "text";
+
     xAlign:number;
     yAlign:number;
     text:string;
@@ -92,6 +94,24 @@ export class TextShape extends RectangleShape {
         newOb.xAlign = parseInt(jsonData.x_align);
         newOb.yAlign = parseInt(jsonData.y_align);
         return newOb;
+    }
+
+    getTypeName() {
+        return TextShape.TypeName;
+    }
+
+    toJsonOb() {
+        let jsonOb = super.toJsonOb();
+        jsonOb.text = this.text;
+        jsonOb.type = "text";
+        jsonOb.font = this.font;
+        jsonOb.exposure = this.exposure;
+        jsonOb.font_color = this.fontColor.toText();
+        jsonOb.line_align = this.lineAlign;
+        jsonOb.max_width_chars = this.maxWidthChars;
+        jsonOb.x_align = this.xAlign;
+        jsonOb.y_align = this.yAlign;
+        return jsonOb;
     }
 
     setFont(font) {

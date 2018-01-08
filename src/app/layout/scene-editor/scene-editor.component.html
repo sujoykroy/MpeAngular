@@ -1,1 +1,3 @@
-<canvas #canvas></canvas>
+<canvas #canvas
+        (dragover)="onDragOver($event)"
+        (drop) = "onDrop($event)" ></canvas>

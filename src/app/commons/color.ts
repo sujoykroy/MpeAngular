@@ -26,6 +26,10 @@ export class Color {
         return "#" + vals.join("");
     }
 
+    toText() {
+        return [this.red, this.green, this.blue, this.alpha].join(",");
+    }
+
     static createFromHtml(text:String) {
         text = text.substr(1);
         let red = text.length>1 ? parseInt(text.substr(0, 2), 16)/255.0 : 1;

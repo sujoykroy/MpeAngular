@@ -1,3 +1,7 @@
-<p>
-  library-pane works!
-</p>
+<mat-tab-group style="height: 100%">
+  <mat-tab label="Shapes" >
+    <shape-thumb *ngFor="let shapeTemplate of shapeTemplates"
+                 [shapeTemplate]="shapeTemplate"></shape-thumb>
+  </mat-tab>
+
+</mat-tab-group>

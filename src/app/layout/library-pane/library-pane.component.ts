@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ComponentFactoryResolver, Input } from '@angular/core';
+import { MpFileService } from './../../misc/mpfile.service';
+import { Scene } from './../../misc/scene';
 
 @Component({
   selector: 'app-library-pane',
@@ -6,10 +8,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./library-pane.component.css']
 })
 export class LibraryPaneComponent implements OnInit {
+    @Input() shapeTemplates = [];
 
-  constructor() { }
+    constructor(private mpFileService: MpFileService) { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
+    ngAfterViewInit() {
+        if (this.shapeTemplates.length==0) {
+            this.mpFileService.getShapeTemplatesData((data)=> {
+                for(let jsonData of data) {
+                    let shapeTemplate = Scene.createFromJson(jsonData);
+                    this.shapeTemplates.push(shapeTemplate);
+                }
+            });
+        }
+    }
 }
