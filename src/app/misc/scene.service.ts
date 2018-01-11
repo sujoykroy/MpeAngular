@@ -14,7 +14,7 @@ export class SceneService {
         for(let i =0; i<5; i++) {
             this.createScene();
         }
-
+        /*
         let scene = this.scenes[0];
         let rectShape1 = RectangleShape.create(100, 100, "#FF0000", "#00FF00", 10);
         rectShape1.moveTo(new Point(0, 0));
@@ -28,6 +28,7 @@ export class SceneService {
             "http://localhost:3000/mp_file/sample.json", (data) => {
                 scene.importFromJson(data);
         });
+        */
     }
 
     createScene(size = null): Scene {

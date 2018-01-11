@@ -1,5 +1,6 @@
 import { Shape, MultiShape } from '../shapes';
 import { Point, extendCtx } from '../commons';
+import { MultiShapeTimeLine } from '../time_lines/multishape_time_line';
 
 export class Scene {
     id;
@@ -52,6 +53,10 @@ export class Scene {
 
     addShape(shape:Shape) {
         this.containerShape.addShape(shape);
+    }
+
+    getMainTimeLine() {
+        return this.containerShape.getNewTimeLine(MultiShapeTimeLine, "main");
     }
 
     draw(ctx) {

@@ -8,15 +8,23 @@ import { MimicShape } from './mimic-shape';
 import { ImageShape } from './image-shape';
 import { VideoShape } from './video-shape';
 import { TextShape } from './text-shape';
-import { Color, copyObject, Point, extendCtx } from '../commons';
+import { Color, copyObject, Point, extendCtx, OrderedDict } from '../commons';
 
 export class MultiShape extends Shape {
     static TypeName = "multi_shape";
     shapes:Shape[] = []
     masked: boolean = false;
+    timelines;
 
     static create(width=1, height=1):MultiShape {
         return new MultiShape(new Point(0,0), null, null, width, height);
+    }
+
+    constructor(
+        anchorAt:Point, borderColor:any, fillColor:any,
+        width:number, height: number) {
+        super(anchorAt, borderColor, fillColor, width, height);
+        this.timelines = new OrderedDict();
     }
 
     static
@@ -101,6 +109,15 @@ export class MultiShape extends Shape {
     addShape(shape:Shape) {
         this.shapes.push(shape);
         shape.setParentShape(this);
+    }
+
+    getNewTimeLine(timeLineClass, timeLineName) {
+        if (this.timelines.keyExists(timeLineName)) {
+            return this.timelines.getItem(timeLineName);
+        }
+        let timeLine = new timeLineClass(timeLineName, this);
+        this.timelines.add(timeLineName, timeLine);
+        return timeLine;
     }
 
     static drawShape(shape, ctx, drawingSize=null,
