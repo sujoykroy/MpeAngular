@@ -10,10 +10,9 @@ import { SceneService } from '../../misc/scene.service'
 
 export class ScenePaneComponent implements OnInit {
   selectedScene:Scene;
-  sceneService: SceneService;
 
-  constructor(sceneService: SceneService) {
-    this.sceneService = sceneService;
+
+  constructor(public sceneService: SceneService) {
   }
 
   ngOnInit() {}

@@ -5,6 +5,7 @@ export class Scene {
     id;
     size: Point;
     containerShape: MultiShape;
+    lastUpdatedAt:number = 0
 
     static sceneIdSeed = 0;
 
@@ -15,6 +16,10 @@ export class Scene {
             containerShape = MultiShape.create(size.x, size.y);
         }
         this.containerShape = containerShape;
+    }
+
+    reUpdate() {
+        this.lastUpdatedAt = (new Date()).getTime();
     }
 
     static createFromJson(jsonData) {
@@ -75,6 +80,8 @@ export class Scene {
                 pad+(canvasSize.x-this.size.x*sceneScale)*0.5,
                 pad+(canvasSize.y-this.size.y*sceneScale)*0.5);
 
+        ctx.save()
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.translate(sceneOffset.x, sceneOffset.y);
 
         //Make outline shadow
@@ -86,5 +93,6 @@ export class Scene {
         ctx.shadowBlur=0;
         ctx.scale(sceneScale, sceneScale);
         this.draw(ctx)
+        ctx.restore();
    }
 }

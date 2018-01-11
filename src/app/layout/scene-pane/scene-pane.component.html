@@ -1,4 +1,7 @@
 <div style="overflow: auto; position: relative; height:100%">
-    <scene-thumb *ngFor="let scene of scenes"
-    (click)="selectScene(scene)" [selected]="isSelectedScene(scene)"></scene-thumb>
+    <scene-thumb *ngFor="let scene of sceneService.scenes"
+            (click)="selectScene(scene)"
+            [scene] = "scene"
+            [sceneUpdatedAt] = "scene.lastUpdatedAt"
+            [selected]="isSelectedScene(scene)"></scene-thumb>
 </div>

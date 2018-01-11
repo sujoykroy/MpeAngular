@@ -1,4 +1,7 @@
 export function extendCtx(ctx) {
+    if (ctx._orig_ctx) {
+        return ctx;
+    }
     ctx._orig_ctx = ctx;
     ctx._matrices = [new TransMatrix()];
     ctx._getLastMatrix = function() {

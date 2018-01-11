@@ -85,6 +85,7 @@ export class SceneEditorComponent implements OnInit {
             shape.moveTo(point);
 
             this.draw();
+            scene.reUpdate();
         }
     }
 
@@ -92,6 +93,10 @@ export class SceneEditorComponent implements OnInit {
     onMouseUp(event) {
         this.mouseIsDown = false;
         this.shapeEditor.reload();
+        let scene = this.sceneService.getActiveScene();
+        if (scene) {
+            scene.reUpdate();
+        }
     }
 
     selectItemAt(point:Point) {
