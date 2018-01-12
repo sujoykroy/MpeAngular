@@ -171,8 +171,8 @@ export class ShapeEditor {
     }
 
     moveActiveItem(startPoint:Point, endPoint:Point) {
-        if (!this.sceneShape) return;
-
+        if (!this.sceneShape) return null;
+        let movementType = null;
         if (this.selectedBox) {
             let relStartPoint = this.initSceneShape.transformPoint(startPoint);
             let relEndPoint = this.initSceneShape.transformPoint(endPoint);
@@ -185,6 +185,7 @@ export class ShapeEditor {
                 } else {
                     this.sceneShape.setHeight(this.initSceneShape.height+relDiffPoint.y, false);
                 }
+                movementType = Shape.MOVE_TYPE_RESIZE;
             } else if (this.selectedBox.equals(this.resizeBoxRight)) {
                 if (this.sceneShape instanceof MultiShape) {
                     this.sceneShape.postScaleX = this.initSceneShape.postScaleX *
@@ -192,34 +193,37 @@ export class ShapeEditor {
                 } else {
                     this.sceneShape.setWidth(this.initSceneShape.width+relDiffPoint.x, false);
                 }
+                movementType = Shape.MOVE_TYPE_RESIZE;
             } else if (this.selectedBox.equals(this.resizeBoxTop)) {
-                    let initAbsAnchorAt = this.initSceneShape.getAbsAnchorAt();
-                    if (this.sceneShape instanceof MultiShape) {
-                        this.sceneShape.postScaleY = this.initSceneShape.postScaleY *
-                        ((this.initSceneShape.height-relDiffPoint.y)/this.initSceneShape.height);
+                let initAbsAnchorAt = this.initSceneShape.getAbsAnchorAt();
+                if (this.sceneShape instanceof MultiShape) {
+                    this.sceneShape.postScaleY = this.initSceneShape.postScaleY *
+                    ((this.initSceneShape.height-relDiffPoint.y)/this.initSceneShape.height);
 
-                        this.sceneShape.anchorAt.y = this.initSceneShape.height-
-                            (this.initSceneShape.height-this.initSceneShape.anchorAt.y)*
-                            (this.initSceneShape.postScaleY/this.sceneShape.postScaleY);
-                    } else {
-                        this.sceneShape.anchorAt.y = this.initSceneShape.anchorAt.y - relDiffPoint.y;
-                        this.sceneShape.setHeight(this.initSceneShape.height-relDiffPoint.y, false);
-                    }
-                    this.sceneShape.moveTo(initAbsAnchorAt);
+                    this.sceneShape.anchorAt.y = this.initSceneShape.height-
+                        (this.initSceneShape.height-this.initSceneShape.anchorAt.y)*
+                        (this.initSceneShape.postScaleY/this.sceneShape.postScaleY);
+                } else {
+                    this.sceneShape.anchorAt.y = this.initSceneShape.anchorAt.y - relDiffPoint.y;
+                    this.sceneShape.setHeight(this.initSceneShape.height-relDiffPoint.y, false);
+                }
+                this.sceneShape.moveTo(initAbsAnchorAt);
+                movementType = Shape.MOVE_TYPE_RESIZE;
             } else if (this.selectedBox.equals(this.resizeBoxLeft)) {
-                    let initAbsAnchorAt = this.initSceneShape.getAbsAnchorAt();
-                    if (this.sceneShape instanceof MultiShape) {
-                        this.sceneShape.postScaleX = this.initSceneShape.postScaleX *
-                        ((this.initSceneShape.width-relDiffPoint.x)/this.initSceneShape.width);
+                let initAbsAnchorAt = this.initSceneShape.getAbsAnchorAt();
+                if (this.sceneShape instanceof MultiShape) {
+                    this.sceneShape.postScaleX = this.initSceneShape.postScaleX *
+                    ((this.initSceneShape.width-relDiffPoint.x)/this.initSceneShape.width);
 
-                        this.sceneShape.anchorAt.x = this.initSceneShape.width-
-                            (this.initSceneShape.width-this.initSceneShape.anchorAt.x)*
-                            (this.initSceneShape.postScaleX/this.sceneShape.postScaleX);
-                    } else {
-                        this.sceneShape.anchorAt.x = this.initSceneShape.anchorAt.x - relDiffPoint.x;
-                        this.sceneShape.setWidth(this.initSceneShape.width-relDiffPoint.x, false);
-                    }
-                    this.sceneShape.moveTo(initAbsAnchorAt);
+                    this.sceneShape.anchorAt.x = this.initSceneShape.width-
+                        (this.initSceneShape.width-this.initSceneShape.anchorAt.x)*
+                        (this.initSceneShape.postScaleX/this.sceneShape.postScaleX);
+                } else {
+                    this.sceneShape.anchorAt.x = this.initSceneShape.anchorAt.x - relDiffPoint.x;
+                    this.sceneShape.setWidth(this.initSceneShape.width-relDiffPoint.x, false);
+                }
+                this.sceneShape.moveTo(initAbsAnchorAt);
+                movementType = Shape.MOVE_TYPE_RESIZE;
             } else if (this.selectedBox.equals(this.resizeBoxBottomRight)) {
                 if (this.sceneShape instanceof MultiShape) {
                     this.sceneShape.postScaleX = this.initSceneShape.postScaleX *
@@ -230,10 +234,12 @@ export class ShapeEditor {
                     this.sceneShape.setWidth(this.initSceneShape.width+relDiffPoint.x, false);
                     this.sceneShape.setHeight(this.initSceneShape.height+relDiffPoint.y, false);
                 }
+                movementType = Shape.MOVE_TYPE_RESIZE;
             } else if (this.selectedBox.equals(this.anchorBox)) {
                 this.sceneShape.anchorAt.assign(
                     this.initSceneShape.anchorAt.x+relDiffPoint.x,
                     this.initSceneShape.anchorAt.y+relDiffPoint.y);
+                movementType = Shape.MOVE_TYPE_ANCHOR;
             } else {
                 let matchedRotationBox = null;
                 for(let editBox of this.rotationBoxes) {
@@ -248,6 +254,7 @@ export class ShapeEditor {
                     let relAnchorEndPoint = endPoint.diff(initAbsAnchorAt);
                     let dangle = relAnchorEndPoint.getAngle() - relAnchorStartPoint.getAngle();
                     this.sceneShape.setAngle(this.initSceneShape.angle+dangle);
+                    movementType = Shape.MOVE_TYPE_ROTATE;
                 }
             }
         } else {
@@ -256,8 +263,10 @@ export class ShapeEditor {
             absAnchorAt.translate(diffPoint.x, diffPoint.y);
 
             this.sceneShape.moveTo(absAnchorAt);
+            movementType = Shape.MOVE_TYPE_XY;
         }
         this.repositionBoxes();
+        return movementType;
     }
 
     draw(ctx) {

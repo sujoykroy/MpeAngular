@@ -3,7 +3,7 @@ export class OrderedDict {
     keys = [];
     length = 0;
 
-    add(item, key=null) {
+    add(key, item) {
         if (key == null) {
             key = item;
         }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SceneService } from '../../misc/scene.service';
 
 @Component({
   selector: 'app-footer',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  constructor(public sceneService: SceneService) { }
 
   ngOnInit() {
   }

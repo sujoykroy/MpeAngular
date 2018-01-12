@@ -19,6 +19,7 @@ export class SceneEditorComponent implements OnInit {
     sceneScale:number = 1;
     sceneOffset: Point;
     mouseIsDown: boolean = false;
+    movementType;
 
     shapeEditor: ShapeEditor = null;
 
@@ -52,7 +53,7 @@ export class SceneEditorComponent implements OnInit {
         this.mousePos.assign(event.layerX, event.layerY);
         this.transformMousePoints(this.mousePos);
         if (this.mouseIsDown) {
-            this.shapeEditor.moveActiveItem(this.mouseInitPos, this.mousePos);
+            this.movementType = this.shapeEditor.moveActiveItem(this.mouseInitPos, this.mousePos);
             this.draw();
         }
     }
@@ -95,8 +96,25 @@ export class SceneEditorComponent implements OnInit {
         this.shapeEditor.reload();
         let scene = this.sceneService.getActiveScene();
         if (scene) {
+            let propName;
+            switch(this.movementType) {
+                case Shape.MOVE_TYPE_RESIZE:
+                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "width");
+                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "height");
+                    break;
+                case Shape.MOVE_TYPE_ANCHOR:
+                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "anchorAt");
+                    break;
+                case Shape.MOVE_TYPE_XY:
+                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "xy");
+                    break;
+                case Shape.MOVE_TYPE_ROTATE:
+                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "angle");
+                    break;
+            }
             scene.reUpdate();
         }
+        this.movementType = null;
     }
 
     selectItemAt(point:Point) {

@@ -44,6 +44,13 @@ export class SceneService {
         this.activeScene = scene;
     }
 
+    moveToTime(t) {
+        if(this.activeScene) {
+            this.activeScene.moveTo(t);
+            this.activeScene.reUpdate();
+        }
+    }
+
     isActiveScene(scene: Scene) {
         return this.activeScene && this.activeScene.equals(scene);
     }

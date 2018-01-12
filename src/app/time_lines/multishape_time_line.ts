@@ -1,5 +1,6 @@
 import { OrderedDict } from '../commons';
 import { ShapeTimeLine } from './shape_time_line';
+import { TimeSlice } from './time_slice';
 
 export class MultiShapeTimeLine {
     shapeTimeLines: OrderedDict;
@@ -9,14 +10,25 @@ export class MultiShapeTimeLine {
         this.shapeTimeLines = new OrderedDict();
     }
 
-    insertShapePropTimeSliceAt(t, shape, propName, timeSlice) {
+    insertShapePropValueAt(t, shape, propName, propValue, propData, maxDuration) {
         let shapeTimeLine;
-        if (this.shapeTimeLines.keyExists(shape.id)) {
+        if (!this.shapeTimeLines.keyExists(shape.idNum)) {
             shapeTimeLine = new ShapeTimeLine(shape);
-            this.shapeTimeLines.add(shape.id, shapeTimeLine);
+            this.shapeTimeLines.add(shape.idNum, shapeTimeLine);
         } else {
-            shapeTimeLine = this.shapeTimeLines.getItem(shape.id);
+            shapeTimeLine = this.shapeTimeLines.getItem(shape.idNum);
         }
-        shapeTimeLine.insertPropTimeSliceAt(t, propName, timeSlice);
+        shapeTimeLine.insertPropValueAt(t, propName, propValue, propData, maxDuration);
+    }
+
+    moveTo(t, forceVisible=true) {
+        if (t<0) return;
+        for (let key of this.shapeTimeLines.keys) {
+            let shapeTimeLine = this.shapeTimeLines.getItem(key);
+            if (forceVisible && shapeTimeLine.shape.renderable) {
+                shapeTimeLine.shape.visible = true;
+            }
+            shapeTimeLine.moveTo(t);
+        }
     }
 }

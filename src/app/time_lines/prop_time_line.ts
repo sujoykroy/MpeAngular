@@ -18,13 +18,18 @@ export class PropTimeLine {
         return true;
     }
 
-    insertTimeSliceAt(t, timeSlice) {
+    insertValueAt(t, propValue, propData, maxDuration, tolerance=2/25.0) {
         if (this.timeSlices.length == 0) {
-            timeSlice.duration += t
+            let timeSlice = new TimeSlice(propValue, propValue, maxDuration);
             this.timeSlices.add(timeSlice.id, timeSlice);
-            return
+            return;
         }
-        if (t == 0) return;
+        if (Math.abs(t) <= tolerance) {
+            let timeSlice = this.timeSlices.getItemAtIndex(0);
+            timeSlice.setStartValue(propValue);
+            timeSlice.setPropData(propData);
+            return;
+        }
 
         let elapsed = 0;
         let inserted = false;
@@ -34,9 +39,9 @@ export class PropTimeLine {
             let existTimeSlice = this.timeSlices.getItemAtIndex(0);
             if (t<elapsed+existTimeSlice.duration) {
                 let remainingTime = elapsed+existTimeSlice.duration-t;
-                if (remainingTime>1/25.) {
+                if (remainingTime>tolerance) {
                     existTimeSlice.duration = t - elapsed;
-                    timeSlice.duration = remainingTime;
+                    let timeSlice = new TimeSlice(propValue, propValue, remainingTime, null, propData);
                     if (this.isTimeSliceLinkable()) {
                         existTimeSlice.endValue = timeSlice.startValue;
                         existTimeSlice.linkedToNext = true;
@@ -44,7 +49,9 @@ export class PropTimeLine {
                     }
                     timeSlice.endMarker = existTimeSlice.endMarker;
                     existTimeSlice.endMarker = null;
-                    this.timeSlices.insertAfter(existTimeSlice, timeSlice.id, timeSlice);
+                    this.timeSlices.insertAfter(existTimeSlice.id, timeSlice.id, timeSlice);
+                } else {
+                    existTimeSlice.setEndValue(propValue);
                 }
                 inserted = true;
                 break;
@@ -57,14 +64,31 @@ export class PropTimeLine {
             let lastValue = lastTimeSlice.valueAt(lastTimeSlice.duration);
             let propData = copyObject(lastTimeSlice.propData);
             let interTimeSlice = new TimeSlice(
-                    lastValue, timeSlice.startValue, t-elapsed, propData);
+                    lastValue, propValue, t-elapsed, propData);
+            let timeSlice = new TimeSlice(propValue, propValue, maxDuration-t, null, propData);
             if (this.isTimeSliceLinkable()) {
                 lastTimeSlice.linkedToNext = true;
                 interTimeSlice.linkedToNext = true;
                 timeSlice.linkedToNext = true;
             }
-            this.timeSlices.insertAfter(lastTimeSlice, interTimeSlice.id, interTimeSlice);
-            this.timeSlices.insertAfter(interTimeSlice, timeSlice.id, timeSlice);
+            this.timeSlices.insertAfter(lastTimeSlice.id, interTimeSlice.id, interTimeSlice);
+            this.timeSlices.insertAfter(interTimeSlice.id, timeSlice.id, timeSlice);
+        }
+    }
+
+    moveTo(t) {
+        let elapsed = 0;
+        for (let i=0; i<this.timeSlices.length; i++) {
+            let timeSlice = this.timeSlices.getItemAtIndex(i);
+            if (t<elapsed+timeSlice.duration || i==this.timeSlices.length-1) {
+                if (t>elapsed+timeSlice.duration) {
+                    t = elapsed+timeSlice.duration;
+                }
+                let value = timeSlice.valueAt(t - elapsed);
+                this.shape.setPropValue(this.propName, value, timeSlice.propData);
+                return;
+            }
+            elapsed += timeSlice.duration;
         }
     }
 }

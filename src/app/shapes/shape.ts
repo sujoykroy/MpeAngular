@@ -1,6 +1,11 @@
 import {Point, Color, copyObject, parseColor, extendCtx } from '../commons'
 
 export class Shape {
+    static MOVE_TYPE_RESIZE = 1;
+    static MOVE_TYPE_XY = 2;
+    static MOVE_TYPE_ROTATE = 3;
+    static MOVE_TYPE_ANCHOR = 4;
+
     static IdSeed:number = 0;
 
     anchorAt:Point;
@@ -96,6 +101,45 @@ export class Shape {
             jsonOb.renderable = "0";
         }
         return jsonOb;
+    }
+
+    setPropValue(propName, propValue, propData, raw=false) {
+        if (!raw) {
+            let setterName = "set" +
+                             propName.substr(0,1).toUpperCase() +
+                             propName.substr(1);
+            if (setterName in this) {
+                this[setterName](propValue, propData);
+                return;
+            }
+        }
+        this[propName] = propValue;
+    }
+
+    getPropValue(propName) {
+        let getterName = "get" +
+                         propName.substr(0,1).toUpperCase() +
+                         propName.substr(1);
+        if (getterName in this) {
+            return this[getterName]();
+        }
+        return this[propName];
+    }
+
+    getXy() {
+        return this.getAbsAnchorAt();
+    }
+
+    setXy(point) {
+        this.moveTo(point);
+    }
+
+    setAnchorAt(point) {
+        this.anchorAt.copyFrom(point);
+    }
+
+    getAnchorAt(point) {
+        return this.anchorAt.copy();
     }
 
     isWithin(point: Point, margin:number=0) {

@@ -1,4 +1,5 @@
 import {copyObject} from '../commons';
+import { TimeChangeType } from './time_change_types';
 
 export class TimeSlice {
     static IdSeed:number = 0;
@@ -7,12 +8,17 @@ export class TimeSlice {
     startValue;
     endValue;
     linkedToNext = false;
+    endMarker;
+    changeType;
 
     constructor(startValue, endValue, private duration,
-                private changeType, private propData=null) {
+                changeType=null, private propData=null) {
         this.startValue = copyObject(startValue);
         this.endValue = copyObject(endValue);
         this.id = ++TimeSlice.IdSeed;
+        if (!changeType) {
+            this.changeType = new TimeChangeType();
+        }
     }
 
     setStartValue(value) {
@@ -23,7 +29,11 @@ export class TimeSlice {
         this.endValue = copyObject(value);
     }
 
+    setPropData(value) {
+        this.propData = copyObject(value);
+    }
+
     valueAt(t) {
-        this.changeType.valueAt(this.startValue, this.endValue, t, this.duration);
+        return this.changeType.valueAt(this.startValue, this.endValue, t, this.duration);
     }
 }
