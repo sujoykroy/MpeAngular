@@ -1,7 +1,8 @@
-import {copyObject} from '../commons';
+import {copyObject, createJsonOb } from '../commons';
 import { TimeChangeType } from './time_change_types';
 
 export class TimeSlice {
+    static TypeName = "time_slice";
     static IdSeed:number = 0;
 
     id;
@@ -35,5 +36,18 @@ export class TimeSlice {
 
     valueAt(t) {
         return this.changeType.valueAt(this.startValue, this.endValue, t, this.duration);
+    }
+
+    toJsonOb() {
+        let jsonOb:any = {};
+        jsonOb.start_value = createJsonOb(this.startValue);
+        jsonOb.end_value = createJsonOb(this.endValue);
+        jsonOb.duration = this.duration;
+        jsonOb.changeType = this.changeType.getTypeName();
+        if (this.propData) {
+            jsonOb.propData = createJsonOb(this.propData);
+        }
+        jsonOb.linked_to_next = this.linkedToNext ? "True" : "False";
+        return jsonOb;
     }
 }

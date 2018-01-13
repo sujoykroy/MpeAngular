@@ -2,10 +2,21 @@ import { OrderedDict } from '../commons';
 import { PropTimeLine } from './prop_time_line';
 
 export class ShapeTimeLine {
+    static TypeName = "shape_time_line";
     propTimeLines: OrderedDict;
 
     constructor(public shape) {
         this.propTimeLines = new OrderedDict();
+    }
+
+    toJsonOb() {
+        let jsonOb:any = {};
+        let propTimeLines = []
+        jsonOb[PropTimeLine.TypeName] = propTimeLines;
+        for(let key of this.propTimeLines.keys) {
+            propTimeLines.push(this.propTimeLines.getItem(key).toJsonOb());
+        }
+        return jsonOb;
     }
 
     insertPropValueAt(t, propName, propValue, propData, maxDuration) {

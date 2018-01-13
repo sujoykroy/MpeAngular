@@ -11,7 +11,6 @@ import { ToolService } from './layout/tool.service'
 })
 export class AppComponent {
   title = 'app';
-  sceneService: SceneService;
 
   headerHeight = 100;
   footerHeight = 50;
@@ -25,7 +24,7 @@ export class AppComponent {
   downItemName = null;
   downLastValue = 0;
 
-  constructor(toolService: ToolService, sceneService: SceneService) {
+  constructor(toolService: ToolService, public sceneService: SceneService) {
     this.sceneService = sceneService;
     toolService.addNewTool(
         "Scene",

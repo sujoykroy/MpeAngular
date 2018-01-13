@@ -35,6 +35,11 @@ export class SceneEditorComponent implements OnInit {
         this.shapeEditor = new ShapeEditor();
     }
 
+    @Input() set sceneUpdatedAt(value) {
+        this.shapeEditor.repositionBoxes();
+        this.draw();
+    }
+
     @HostListener("mousedown", ["$event"])
     onMouseDown(event) {
         this.mouseIsDown = true;

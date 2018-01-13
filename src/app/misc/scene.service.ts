@@ -14,6 +14,7 @@ export class SceneService {
         for(let i =0; i<5; i++) {
             this.createScene();
         }
+        this.activeScene = this.scenes[0];
         /*
         let scene = this.scenes[0];
         let rectShape1 = RectangleShape.create(100, 100, "#FF0000", "#00FF00", 10);
@@ -60,7 +61,7 @@ export class SceneService {
     }
 
     getActiveScene() {
-    return this.activeScene || this.scenes[0];
+        return this.activeScene || this.scenes[0];
     }
 
 }

@@ -1,6 +1,12 @@
 import { Point } from '../commons';
 
 export class TimeChangeType {
+    static TypeName = "linear";
+
+    getTypeName() {
+        return TimeChangeType.TypeName;
+    }
+
     valueAt(startValue, endValue, t, duration) {
         duration = parseFloat(duration);
         if (duration == 0) {
@@ -118,6 +124,11 @@ export class PeriodicChangeType extends TimeChangeType {
 }
 
 export class SineChangeType extends PeriodicChangeType {
+    static TypeName = "sine";
+
+    getTypeName() {
+        return SineChangeType.TypeName;
+    }
 
     selfValueAt(t) {
         let freqMult = 1;
@@ -132,6 +143,12 @@ export class SineChangeType extends PeriodicChangeType {
 }
 
 export class TriangleChangeType extends PeriodicChangeType {
+    static TypeName = "triangle";
+
+    getTypeName() {
+        return TriangleChangeType.TypeName;
+    }
+
     selfValueAt(t) {
         let frac = t/this.period;
 
@@ -151,6 +168,12 @@ export class TriangleChangeType extends PeriodicChangeType {
 }
 
 export class SawtoothChangeType extends PeriodicChangeType {
+    static TypeName = "sawt";
+
+    getTypeName() {
+        return SawtoothChangeType.TypeName;
+    }
+
     selfValueAt(t) {
         let frac = t/this.period;
         let freqMult = 1
@@ -166,6 +189,12 @@ export class SawtoothChangeType extends PeriodicChangeType {
 }
 
 export class LoopChangeType extends TimeChangeType {
+    static TypeName = "loop";
+
+    getTypeName() {
+        return LoopChangeType.TypeName;
+    }
+
     constructor(private loopCount=1) {
         super();
     }

@@ -7,7 +7,7 @@ export class Scene {
     size: Point;
     containerShape: MultiShape;
     lastUpdatedAt:number = 0;
-    duration: 10;
+    duration = 10;
     currentTimePos = 0;
 
     static sceneIdSeed = 0;
@@ -65,13 +65,14 @@ export class Scene {
         let propValue = shape.getPropValue(propName);
         let timeline = this.getMainTimeLine();
         timeline.insertShapePropValueAt(
-            this.currentTimePos, shape, propName, propValue, this.duration);
+            this.currentTimePos, shape, propName, propValue, null, this.duration);
     }
 
     moveTo(t) {
         this.currentTimePos = t;
         let timeline = this.getMainTimeLine();
         timeline.moveTo(t);
+        this.reUpdate();
     }
 
     draw(ctx) {

@@ -2,17 +2,28 @@ import { TimeSlice } from './time_slice';
 import { OrderedDict, copyObject } from '../commons';
 
 export class PropTimeLine {
+    static TypeName = "prop_time_line";
     timeSlices: OrderedDict;
 
     constructor(private shape, private propName) {
         this.timeSlices = new OrderedDict();
     }
 
+    toJsonOb() {
+        let jsonOb:any = {};
+        let timeSlices = [];
+        jsonOb[TimeSlice.TypeName] = timeSlices;
+        for(let key of this.timeSlices.keys) {
+            timeSlices.push(this.timeSlices.getItem(key).toJsonOb());
+        }
+        return jsonOb;
+    }
+
     isTimeSliceLinkable() {
         if (this.propName in ['internal', "time_pos"]) {
             return false;
         }
-        if (this.propName.startswith("pose_")) {
+        if (this.propName.startsWith("pose_")) {
             return false;
         }
         return true;
@@ -36,14 +47,14 @@ export class PropTimeLine {
         let prevTimeSlice = null;
 
         for (let i=0; i<this.timeSlices.length; i++) {
-            let existTimeSlice = this.timeSlices.getItemAtIndex(0);
-            if (t<elapsed+existTimeSlice.duration) {
+            let existTimeSlice = this.timeSlices.getItemAtIndex(i);
+            if (t<=elapsed+existTimeSlice.duration) {
                 let remainingTime = elapsed+existTimeSlice.duration-t;
                 if (remainingTime>tolerance) {
                     existTimeSlice.duration = t - elapsed;
                     let timeSlice = new TimeSlice(propValue, propValue, remainingTime, null, propData);
                     if (this.isTimeSliceLinkable()) {
-                        existTimeSlice.endValue = timeSlice.startValue;
+                        existTimeSlice.setEndValue(timeSlice.startValue);
                         existTimeSlice.linkedToNext = true;
                         timeSlice.linkedToNext = true;
                     }
