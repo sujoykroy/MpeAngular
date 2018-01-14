@@ -5,6 +5,7 @@ import { SceneService } from '../../misc/scene.service';
 import { Point, extendCtx } from '../../commons';
 import { ShapeEditor } from '../../misc/shape-editor';
 import { Shape, MultiShape } from '../../shapes';
+import { TimeMarkerService } from '../../misc/time-marker.service';
 
 @Component({
   selector: 'scene-editor',
@@ -16,8 +17,10 @@ export class SceneEditorComponent implements OnInit {
     mouseInitPos: Point;
     mousePos:Point;
     pad:number = 10;
+
     sceneScale:number = 1;
     sceneOffset: Point;
+
     mouseIsDown: boolean = false;
     movementType;
 
@@ -28,7 +31,8 @@ export class SceneEditorComponent implements OnInit {
     @ViewChild("canvas") thumbCanvasElem: ElementRef;
 
     constructor(public viewContainerRef: ViewContainerRef,
-              public sceneService: SceneService) {
+              public sceneService: SceneService,
+              private timeMarkerService: TimeMarkerService) {
         this.mouseInitPos = new Point(0, 0);
         this.mousePos = new Point(0, 0);
         this.sceneOffset = new Point(0, 0);
@@ -74,7 +78,7 @@ export class SceneEditorComponent implements OnInit {
         let shapeTemplate = event.dataTransfer.getData("shapeTemplate");
 
         if(shapeTemplate) {
-            let scene = this.sceneService.getActiveScene();
+            let scene = this.sceneService.activeScene;
             let jsonData = JSON.parse(shapeTemplate);
             let rootShape = jsonData.root.shape;
 
@@ -99,32 +103,28 @@ export class SceneEditorComponent implements OnInit {
     onMouseUp(event) {
         this.mouseIsDown = false;
         this.shapeEditor.reload();
-        let scene = this.sceneService.getActiveScene();
-        if (scene) {
-            let propName;
-            switch(this.movementType) {
-                case Shape.MOVE_TYPE_RESIZE:
-                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "width");
-                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "height");
-                    break;
-                case Shape.MOVE_TYPE_ANCHOR:
-                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "anchorAt");
-                    break;
-                case Shape.MOVE_TYPE_XY:
-                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "xy");
-                    break;
-                case Shape.MOVE_TYPE_ROTATE:
-                    scene.insertShapePropValue(this.shapeEditor.sceneShape, "angle");
-                    break;
-            }
-            scene.reUpdate();
+        let shape:Shape = this.shapeEditor.sceneShape;
+        switch(this.movementType) {
+            case Shape.MOVE_TYPE_RESIZE:
+                this.sceneService.insertShapePropValue(shape, "width");
+                this.sceneService.insertShapePropValue(shape, "height");
+                break;
+            case Shape.MOVE_TYPE_ANCHOR:
+                this.sceneService.insertShapePropValue(shape, "anchorAt");
+                break;
+            case Shape.MOVE_TYPE_XY:
+                this.sceneService.insertShapePropValue(shape, "xy");
+                break;
+            case Shape.MOVE_TYPE_ROTATE:
+                this.sceneService.insertShapePropValue(shape, "angle");
+                break;
         }
         this.movementType = null;
     }
 
     selectItemAt(point:Point) {
         if (!this.shapeEditor.selectItemAt(point)) {
-            let scene = this.sceneService.getActiveScene();
+            let scene = this.sceneService.activeScene;
             let foundShape:Shape = null;
             for(let i=scene.containerShape.shapes.length-1; i>=0; i--) {
                 let shape = scene.containerShape.shapes[i];
@@ -148,7 +148,7 @@ export class SceneEditorComponent implements OnInit {
         canvas.width = parentNode.clientWidth;;
         canvas.height = parentNode.clientHeight;
 
-        let scene = this.sceneService.getActiveScene();
+        let scene = this.sceneService.activeScene;
         let canvasSize = new Point(canvas.width-2*this.pad, canvas.height-2*this.pad);
         let sceneScaleX =  canvasSize.x/scene.size.x;
         let sceneScaleY = canvasSize.y/scene.size.y;
@@ -163,7 +163,7 @@ export class SceneEditorComponent implements OnInit {
         let canvas = this.thumbCanvasElem.nativeElement;
         let ctx = canvas.getContext("2d");
         extendCtx(ctx);
-        let scene = this.sceneService.getActiveScene();
+        let scene = this.sceneService.activeScene;
         if (!scene) {
             return;
         }

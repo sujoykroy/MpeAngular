@@ -1,4 +1,5 @@
-<mat-slider #slider min="0" value="0" step="{{1/30}}"
+<mat-slider #slider min="0" value="0" step="{{1/25}}"
     [max]="sceneService.activeScene.duration"
     (input) = "sceneService.moveToTime(slider.value)"
     [thumb-label]="true" style="width:100%"></mat-slider>
+<master-time-line></master-time-line>

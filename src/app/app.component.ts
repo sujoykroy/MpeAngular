@@ -10,68 +10,63 @@ import { ToolService } from './layout/tool.service'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+    title = 'app';
 
-  headerHeight = 100;
-  footerHeight = 50;
+    headerHeight = 100;
+    footerHeight = 50;
 
-  vertBarWidth = 10;
-  scenePaneWidth = 100;
-  libraryPaneWidth = 100;
+    vertBarWidth = 10;
+    scenePaneWidth = 100;
+    libraryPaneWidth = 100;
 
-  pressed = false;
-  mousePosX = 0;
-  downItemName = null;
-  downLastValue = 0;
+    pressed = false;
+    mousePosX = 0;
+    downItemName = null;
+    downLastValue = 0;
 
-  constructor(toolService: ToolService, public sceneService: SceneService) {
-    this.sceneService = sceneService;
-    toolService.addNewTool(
-        "Scene",
-        "New Scene",
-        ()=>{
-            sceneService.createScene();
+    constructor(toolService: ToolService, public sceneService: SceneService) {
+        toolService.addNewTool(
+            "Scene",
+            "New Scene",
+            ()=>{
+                sceneService.createScene();
+            }
+        );
+    }
+
+    @HostListener("mousedown", ["$event"])
+    onMouseDown(event: any) {
+        this.pressed = true;
+        this.mousePosX = event.clientX
+
+        let attribs = event.target.attributes
+        if(attribs.name) {
+            this.downItemName = attribs.name.value;
+            if (this.downItemName == "sceneBar") {
+                this.downLastValue = this.scenePaneWidth;
+            } else if (this.downItemName == "libraryBar") {
+                this.downLastValue = this.libraryPaneWidth;
+            }
+        } else {
+            this.downItemName = null;
         }
-    );
-  }
+    }
 
-  getActiveScene() {
-    return this.sceneService.getActiveScene();
-  }
+    @HostListener('mousemove', ["$event"])
+    onMouseMove(event: any) {
+        if (!this.pressed) return;
 
-  @HostListener("mousedown", ["$event"])
-  onMouseDown(event: any) {
-    this.pressed = true;
-    this.mousePosX = event.clientX
-
-    let attribs = event.target.attributes
-    if(attribs.name) {
-        this.downItemName = attribs.name.value;
+        let dX = event.clientX-this.mousePosX;
         if (this.downItemName == "sceneBar") {
-            this.downLastValue = this.scenePaneWidth;
+            this.scenePaneWidth = this.downLastValue + dX;
         } else if (this.downItemName == "libraryBar") {
-            this.downLastValue = this.libraryPaneWidth;
+            this.libraryPaneWidth = this.downLastValue - dX;
         }
-    } else {
-        this.downItemName = null;
     }
-  }
 
-  @HostListener('mousemove', ["$event"])
-  onMouseMove(event: any) {
-    if (!this.pressed) return;
-
-    let dX = event.clientX-this.mousePosX;
-    if (this.downItemName == "sceneBar") {
-        this.scenePaneWidth = this.downLastValue + dX;
-    } else if (this.downItemName == "libraryBar") {
-        this.libraryPaneWidth = this.downLastValue - dX;
+    @HostListener('mouseup')
+    onMouseUp() {
+        this.pressed = false;
+        this.downLastValue = 0;
     }
-  }
-
-  @HostListener('mouseup')
-  onMouseUp() {
-    this.pressed = false;
-    this.downLastValue = 0;
-  }
 }

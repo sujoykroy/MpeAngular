@@ -9,4 +9,11 @@
     background: $head-end-color;
     background: linear-gradient($head-end-color, $head-start-color 1%);
     z-index:100;
+    width: 100%;
+}
+
+:host .mat-slider {
+    position: absolute;
+    left: 0px;
+    right: 0px;
 }

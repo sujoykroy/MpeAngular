@@ -1,5 +1,5 @@
 import {copyObject, createJsonOb } from '../commons';
-import { TimeChangeType } from './time_change_types';
+import { TimeChangeType } from './time-change-types';
 
 export class TimeSlice {
     static TypeName = "time_slice";

@@ -17,7 +17,7 @@
     [style.right.px]="libraryPaneWidth+vertBarWidth"
     [widthSize]="scenePaneWidth*1000+libraryPaneWidth"
     [style.bottom.px]="footerHeight"
-    [scene]="getActiveScene()">
+    [scene]="sceneService.activeScene">
 </scene-editor>
 <vertical-bar name="libraryBar"
     [style.top.px]="headerHeight"

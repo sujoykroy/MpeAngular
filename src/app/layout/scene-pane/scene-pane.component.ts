@@ -9,23 +9,18 @@ import { SceneService } from '../../misc/scene.service'
 })
 
 export class ScenePaneComponent implements OnInit {
-  selectedScene:Scene;
+    selectedScene:Scene;
 
 
-  constructor(public sceneService: SceneService) {
-  }
+    constructor(public sceneService: SceneService) {}
 
-  ngOnInit() {}
+    ngOnInit() {}
 
-  selectScene(scene:Scene) {
-    this.sceneService.setActiveScene(scene);
-  }
+    selectScene(scene:Scene) {
+        this.sceneService.setActiveScene(scene);
+    }
 
-  isSelectedScene(scene:Scene) {
-    return this.sceneService.isActiveScene(scene);
-  }
-
-  getScenes():Scene[] {
-    return this.sceneService.getScenes();
-  }
+    isSelectedScene(scene:Scene) {
+        return this.sceneService.isActiveScene(scene);
+    }
 }

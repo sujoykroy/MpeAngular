@@ -1,0 +1,14 @@
+:host {
+    left: 0px;
+    right: 0px;
+    position: absolute;
+}
+
+.time-marker {
+    position: absolute;
+    left: 0px;
+}
+
+.time-marker p {
+    position: absolute;
+}

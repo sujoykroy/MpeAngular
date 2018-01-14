@@ -1,6 +1,6 @@
 import { Shape, MultiShape } from '../shapes';
 import { Point, extendCtx } from '../commons';
-import { MultiShapeTimeLine } from '../time_lines/multishape_time_line';
+import { MultiShapeTimeLine } from '../time-lines/multishape-time-line';
 
 export class Scene {
     id;
@@ -59,20 +59,6 @@ export class Scene {
 
     getMainTimeLine() {
         return this.containerShape.getNewTimeLine(MultiShapeTimeLine, "main");
-    }
-
-    insertShapePropValue(shape, propName) {
-        let propValue = shape.getPropValue(propName);
-        let timeline = this.getMainTimeLine();
-        timeline.insertShapePropValueAt(
-            this.currentTimePos, shape, propName, propValue, null, this.duration);
-    }
-
-    moveTo(t) {
-        this.currentTimePos = t;
-        let timeline = this.getMainTimeLine();
-        timeline.moveTo(t);
-        this.reUpdate();
     }
 
     draw(ctx) {

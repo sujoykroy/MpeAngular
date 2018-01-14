@@ -1,0 +1,9 @@
+<div class="time-line-wrapper" #timeLineWrapper>
+    <div class="time-marker"
+        *ngFor="let timeMarker of sceneService.activeTimeMarkers"
+        [style.left.px]="getMarkerLeft(timeMarker)" [style.display] = "block">
+        <p>|</p>
+        <p>{{ timeMarker.text }}</p>
+    </div>
+</div>
+

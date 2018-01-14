@@ -1,5 +1,5 @@
 import { OrderedDict } from '../commons';
-import { PropTimeLine } from './prop_time_line';
+import { PropTimeLine } from './prop-time-line';
 
 export class ShapeTimeLine {
     static TypeName = "shape_time_line";
@@ -19,7 +19,7 @@ export class ShapeTimeLine {
         return jsonOb;
     }
 
-    insertPropValueAt(t, propName, propValue, propData, maxDuration) {
+    insertPropValueAt(tm, propName, propValue, propData) {
         let propTimeLine;
         if (!this.propTimeLines.keyExists(propName)) {
             propTimeLine = new PropTimeLine(this.shape, propName);
@@ -27,7 +27,7 @@ export class ShapeTimeLine {
         } else {
             propTimeLine = this.propTimeLines.getItem(propName);
         }
-        propTimeLine.insertValueAt(t, propValue, propData, maxDuration);
+        propTimeLine.insertValueAt(tm, propValue, propData);
     }
 
     moveTo(t) {

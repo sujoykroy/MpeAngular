@@ -1,5 +1,6 @@
-import { TimeSlice } from './time_slice';
+import { TimeSlice } from './time-slice';
 import { OrderedDict, copyObject } from '../commons';
+import { TimeMarker } from './time-marker';
 
 export class PropTimeLine {
     static TypeName = "prop_time_line";
@@ -29,22 +30,19 @@ export class PropTimeLine {
         return true;
     }
 
-    insertValueAt(t, propValue, propData, maxDuration, tolerance=2/25.0) {
-        if (this.timeSlices.length == 0) {
-            let timeSlice = new TimeSlice(propValue, propValue, maxDuration);
-            this.timeSlices.add(timeSlice.id, timeSlice);
-            return;
-        }
-        if (Math.abs(t) <= tolerance) {
-            let timeSlice = this.timeSlices.getItemAtIndex(0);
-            timeSlice.setStartValue(propValue);
-            timeSlice.setPropData(propData);
-            return;
-        }
-
+    insertValueAt(tm:TimeMarker, propValue, propData, tolerance=2/25.0) {
+        let t:number = tm.getAt();
         let elapsed = 0;
         let inserted = false;
         let prevTimeSlice = null;
+
+        let lastTimeSlice = this.timeSlices.getLastItem();
+        if (lastTimeSlice && lastTimeSlice.duration == 0) {
+            lastTimeSlice.setEndValue(propValue);
+            lastTimeSlice.endMarker = tm;
+            lastTimeSlice.duration = t;
+            return;
+        }
 
         for (let i=0; i<this.timeSlices.length; i++) {
             let existTimeSlice = this.timeSlices.getItemAtIndex(i);
@@ -52,14 +50,15 @@ export class PropTimeLine {
                 let remainingTime = elapsed+existTimeSlice.duration-t;
                 if (remainingTime>tolerance) {
                     existTimeSlice.duration = t - elapsed;
-                    let timeSlice = new TimeSlice(propValue, propValue, remainingTime, null, propData);
+                    let timeSlice = new TimeSlice(
+                            propValue, propValue, remainingTime, null, propData);
                     if (this.isTimeSliceLinkable()) {
                         existTimeSlice.setEndValue(timeSlice.startValue);
                         existTimeSlice.linkedToNext = true;
                         timeSlice.linkedToNext = true;
                     }
                     timeSlice.endMarker = existTimeSlice.endMarker;
-                    existTimeSlice.endMarker = null;
+                    existTimeSlice.endMarker = tm;
                     this.timeSlices.insertAfter(existTimeSlice.id, timeSlice.id, timeSlice);
                 } else {
                     existTimeSlice.setEndValue(propValue);
@@ -71,19 +70,25 @@ export class PropTimeLine {
             prevTimeSlice = existTimeSlice;
         }
         if (!inserted) {
-            let lastTimeSlice = this.timeSlices.getLastItem();
-            let lastValue = lastTimeSlice.valueAt(lastTimeSlice.duration);
-            let propData = copyObject(lastTimeSlice.propData);
-            let interTimeSlice = new TimeSlice(
-                    lastValue, propValue, t-elapsed, propData);
-            let timeSlice = new TimeSlice(propValue, propValue, maxDuration-t, null, propData);
+            let startValue = propValue;
+            let duration = t;
+            if (lastTimeSlice) {
+                duration = t-elapsed;
+                startValue = lastTimeSlice.endValue;
+            }
+            let timeSlice = new TimeSlice(startValue, propValue, duration, null, propData);
+            timeSlice.endMarker = tm;
             if (this.isTimeSliceLinkable()) {
-                lastTimeSlice.linkedToNext = true;
-                interTimeSlice.linkedToNext = true;
+                if(lastTimeSlice) {
+                    lastTimeSlice.linkedToNext = true;
+                }
                 timeSlice.linkedToNext = true;
             }
-            this.timeSlices.insertAfter(lastTimeSlice.id, interTimeSlice.id, interTimeSlice);
-            this.timeSlices.insertAfter(interTimeSlice.id, timeSlice.id, timeSlice);
+            if (lastTimeSlice) {
+                this.timeSlices.insertAfter(lastTimeSlice.id, timeSlice.id, timeSlice);
+            } else {
+                this.timeSlices.add(timeSlice.id, timeSlice);
+            }
         }
     }
 
