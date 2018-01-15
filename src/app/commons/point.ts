@@ -56,7 +56,11 @@ export class Point {
         return Math.atan2(this.y, this.x)*180/Math.PI;
     }
 
-    toText() {
+    toText(digits=-1) {
+        if(digits>=0) {
+            return this.x.toFixed(digits).toString() + "," +
+                   this.y.toFixed(digits).toString();
+        }
         return this.x.toString() + "," + this.y.toString();
     }
 

@@ -3,5 +3,8 @@
     <shape-thumb *ngFor="let shapeTemplate of shapeTemplates"
                  [shapeTemplate]="shapeTemplate"></shape-thumb>
   </mat-tab>
-
+  <mat-tab label="Properties" >
+    <shape-prop *ngFor="let shapeProp of sceneService.shapeProps"
+                 [shapeProp]="shapeProp"></shape-prop>
+  </mat-tab>
 </mat-tab-group>

@@ -24,6 +24,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { MasterTimeLineComponent } from './layout/master-time-line/master-time-line.component';
 import { TimeMarkerEditorComponent } from './layout/time-marker-editor/time-marker-editor.component';
 import { YesNoDialogComponent } from './layout/yes-no-dialog/yes-no-dialog.component';
+import { ShapePropComponent } from './layout/shape-prop/shape-prop.component';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { YesNoDialogComponent } from './layout/yes-no-dialog/yes-no-dialog.compo
         MasterTimeLineComponent,
         TimeMarkerEditorComponent,
         YesNoDialogComponent,
+        ShapePropComponent,
     ],
     imports: [
         BrowserModule,

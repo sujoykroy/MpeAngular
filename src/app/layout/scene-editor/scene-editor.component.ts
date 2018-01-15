@@ -131,6 +131,7 @@ export class SceneEditorComponent implements OnInit {
                     break;
                 }
             }
+            this.sceneService.setActiveShape(foundShape);
             this.shapeEditor.setSceneShape(foundShape);
         }
     }

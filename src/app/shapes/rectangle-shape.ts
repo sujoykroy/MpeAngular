@@ -8,7 +8,7 @@ export class RectangleShape extends Shape {
     cornerRadius: number;
 
     static create(width:number, height:number,
-                  borderColor:any, fillColor:any, radius:number=0) {
+                  borderColor:any=null, fillColor:any=null, radius:number=0) {
         return new RectangleShape(
             new Point(width*0.5, height*0.5),
             borderColor, fillColor, width, height, radius);

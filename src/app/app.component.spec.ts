@@ -9,6 +9,7 @@ import { VerticalBarComponent } from './layout/vertical-bar/vertical-bar.compone
 import { ToolButtonComponent } from './layout/tool-button/tool-button.component';
 import { SceneThumbComponent } from './layout/scene-thumb/scene-thumb.component';
 import { ShapeThumbComponent } from './layout/shape-thumb/shape-thumb.component';
+import { MasterTimeLineComponent } from './layout/master-time-line/master-time-line.component';
 import { MaterialModule} from './material.module';
 
 describe('AppComponent', () => {
@@ -21,7 +22,8 @@ describe('AppComponent', () => {
                 AppComponent,
                 HeaderComponent, FooterComponent, ShapeThumbComponent,
                 ScenePaneComponent, LibraryPaneComponent, SceneThumbComponent,
-                SceneEditorComponent, VerticalBarComponent, ToolButtonComponent
+                SceneEditorComponent, VerticalBarComponent, ToolButtonComponent,
+                MasterTimeLineComponent
             ],
         }).compileComponents();
     }));

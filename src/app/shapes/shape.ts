@@ -1,4 +1,5 @@
 import {Point, Color, copyObject, parseColor, extendCtx } from '../commons'
+import { PointShapeProp, FloatShapeProp } from './shape-props';
 
 export class Shape {
     static MOVE_TYPE_RESIZE = 1;
@@ -7,6 +8,13 @@ export class Shape {
     static MOVE_TYPE_ANCHOR = 4;
 
     static IdSeed:number = 0;
+
+    static ShapeProps = [
+        new PointShapeProp("xy"),
+        new FloatShapeProp("width"),
+        new FloatShapeProp("height"),
+        new FloatShapeProp("angle")
+    ]
 
     anchorAt:Point;
     width: number;
@@ -45,6 +53,10 @@ export class Shape {
 
     getTypeName() {
         return "shape";
+    }
+
+    getShapeProps() {
+        return Shape.ShapeProps;
     }
 
     copy(deepCopy:boolean = false):Shape {

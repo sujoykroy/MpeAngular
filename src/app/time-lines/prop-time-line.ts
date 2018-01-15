@@ -51,7 +51,7 @@ export class PropTimeLine {
                 if (remainingTime>tolerance) {
                     existTimeSlice.duration = t - elapsed;
                     let timeSlice = new TimeSlice(
-                            propValue, propValue, remainingTime, null, propData);
+                            propValue, existTimeSlice.endValue, remainingTime, null, propData);
                     if (this.isTimeSliceLinkable()) {
                         existTimeSlice.setEndValue(timeSlice.startValue);
                         existTimeSlice.linkedToNext = true;

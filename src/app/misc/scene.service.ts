@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Scene } from './scene';
 import { Point } from '../commons';
 import { TimeMarker } from '../time-lines/time-marker';
+import { Shape } from '../shapes/shape';
+import { ShapeProp } from '../shapes/shape-props';
 
 @Injectable()
 export class SceneService {
@@ -11,6 +13,8 @@ export class SceneService {
     activeScene:Scene;
     activeTimeLine;
     activeTimeMarkers: TimeMarker[] = [];
+    activeShape:Shape;
+    shapeProps:ShapeProp[] = [];
 
     timePos: number = 0;
 
@@ -37,6 +41,27 @@ export class SceneService {
         this.activeScene = scene;
         this.activeTimeLine = scene.getMainTimeLine();
         this.activeTimeMarkers = this.activeTimeLine.timeMarkers;
+    }
+
+    setActiveShape(shape:Shape) {
+        this.activeShape = shape;
+        if(this.activeShape) {
+            this.shapeProps = this.activeShape.getShapeProps();
+        } else {
+            this.shapeProps = [];
+        }
+    }
+
+    setActiveShapePropValue(propName, propValue) {
+        if(!this.activeShape) return;
+        this.activeShape.setPropValue(propName, propValue, null);
+        this.insertShapePropValue(this.activeShape, propName);
+        this.activeScene.reUpdate();
+    }
+
+    getActiveShapePropValue(propName) {
+        if(!this.activeShape) return null;
+        return this.activeShape.getPropValue(propName);
     }
 
     insertShapePropValue(shape, propName) {

@@ -75,5 +75,34 @@ describe('SceneService', () => {
         expect(secondTimeSlice.endValue.x).toBe(30);
         expect(secondTimeSlice.endValue.y).toBe(40);
         expect(secondTimeSlice.duration).toBe(20);
+
+        //third move
+        service.moveToTime(20)
+        shape1.moveTo(new Point(100, 200))
+        service.insertShapePropValue(shape1, "xy");
+
+        expect(xyPropLine.timeSlices.length).toBe(3);
+
+        firstTimeSlice = xyPropLine.timeSlices.getItemAtIndex(0);
+        expect(firstTimeSlice.startValue.x).toBe(0);
+        expect(firstTimeSlice.startValue.y).toBe(0);
+        expect(firstTimeSlice.endValue.x).toBe(10);
+        expect(firstTimeSlice.endValue.y).toBe(20);
+        expect(firstTimeSlice.duration).toBe(10);
+
+        secondTimeSlice = xyPropLine.timeSlices.getItemAtIndex(1);
+        expect(secondTimeSlice.startValue.x).toBe(10);
+        expect(secondTimeSlice.startValue.y).toBe(20);
+        expect(secondTimeSlice.endValue.x).toBe(100);
+        expect(secondTimeSlice.endValue.y).toBe(200);
+        expect(secondTimeSlice.duration).toBe(10);
+
+        let thirdTimeSlice = xyPropLine.timeSlices.getItemAtIndex(2);
+        expect(thirdTimeSlice.startValue.x).toBe(100);
+        expect(thirdTimeSlice.startValue.y).toBe(200);
+        expect(thirdTimeSlice.endValue.x).toBe(30);
+        expect(thirdTimeSlice.endValue.y).toBe(40);
+        expect(thirdTimeSlice.duration).toBe(10);
+
     }));
 });

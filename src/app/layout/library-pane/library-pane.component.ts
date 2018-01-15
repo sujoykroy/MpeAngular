@@ -1,5 +1,6 @@
 import { Component, OnInit, ComponentFactoryResolver, Input } from '@angular/core';
 import { MpFileService } from './../../misc/mpfile.service';
+import { SceneService } from './../../misc/scene.service';
 import { Scene } from './../../misc/scene';
 
 @Component({
@@ -10,7 +11,8 @@ import { Scene } from './../../misc/scene';
 export class LibraryPaneComponent implements OnInit {
     @Input() shapeTemplates = [];
 
-    constructor(private mpFileService: MpFileService) { }
+    constructor(private mpFileService: MpFileService,
+                public sceneService: SceneService) { }
 
     ngOnInit() {
     }
