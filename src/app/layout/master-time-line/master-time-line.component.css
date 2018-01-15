@@ -1,6 +1,6 @@
 :host {
-    left: 0px;
-    right: 0px;
+    left: 8px;
+    right: 8px;
     position: absolute;
 }
 
@@ -10,5 +10,26 @@
 }
 
 .time-marker p {
-    position: absolute;
+    position: block;
+    margin: 0px;
+    text-align: left;
+}
+
+.time-marker .bar {
+    margin-top: 3px;
+}
+
+.time-marker .label {
+    margin-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 1px;
+    background: white;
+    border: 1px solid black;
+    cursor: grab;
+    user-select: none;
+}
+
+.time-marker .label:active {
+    cursor: grabbing;
 }

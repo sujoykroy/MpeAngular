@@ -2,8 +2,11 @@
     <div class="time-marker"
         *ngFor="let timeMarker of sceneService.activeTimeMarkers"
         [style.left.px]="getMarkerLeft(timeMarker)" [style.display] = "block">
-        <p>|</p>
-        <p>{{ timeMarker.text }}</p>
+        <p class="bar">|</p>
+        <p class="label"
+            (slide)="onTimeMarkerSlide(timeMarker.idNum, $event)"
+            (click)="onTimeMarkerClick(timeMarker.idNum)"
+            (dblclick)="onTimeMarkerDblClick(timeMarker.idNum)"
+            >{{ timeMarker.text }}</p>
     </div>
 </div>
-

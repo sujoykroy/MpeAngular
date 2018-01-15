@@ -5,7 +5,6 @@ import { SceneService } from '../../misc/scene.service';
 import { Point, extendCtx } from '../../commons';
 import { ShapeEditor } from '../../misc/shape-editor';
 import { Shape, MultiShape } from '../../shapes';
-import { TimeMarkerService } from '../../misc/time-marker.service';
 
 @Component({
   selector: 'scene-editor',
@@ -31,8 +30,7 @@ export class SceneEditorComponent implements OnInit {
     @ViewChild("canvas") thumbCanvasElem: ElementRef;
 
     constructor(public viewContainerRef: ViewContainerRef,
-              public sceneService: SceneService,
-              private timeMarkerService: TimeMarkerService) {
+              public sceneService: SceneService) {
         this.mouseInitPos = new Point(0, 0);
         this.mousePos = new Point(0, 0);
         this.sceneOffset = new Point(0, 0);

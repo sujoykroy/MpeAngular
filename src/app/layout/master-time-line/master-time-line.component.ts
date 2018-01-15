@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { SceneService } from '../../misc/scene.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { TimeMarkerEditorComponent } from '../time-marker-editor/time-marker-editor.component';
 
 @Component({
     selector: 'master-time-line',
@@ -12,7 +14,9 @@ export class MasterTimeLineComponent implements OnInit {
 
     _timeLineDimension: ClientRect | null = null;
 
-    constructor(public sceneService: SceneService) { }
+    constructor(public sceneService: SceneService,
+                public dialog: MatDialog) {
+    }
 
     ngOnInit() {}
 
@@ -31,7 +35,28 @@ export class MasterTimeLineComponent implements OnInit {
 
     ngAfterViewInit() {
         this._timeLineDimension = this._getTimeLineDimensions();
-        console.log(this._timeLineDimension);
     }
 
+    onTimeMarkerSlide(timeMarkerIdNum, $event) {
+        let timeMarker = this.sceneService.activeTimeLine.getTimeMarkerByIdNum(timeMarkerIdNum);
+        if(!timeMarker) return;
+        this._timeLineDimension = this._getTimeLineDimensions();
+        let percent = $event.center.x/this._timeLineDimension.width;
+        let t = this.sceneService.activeScene.duration*percent;
+        this.sceneService.activeTimeLine.moveTimeMarkerTo(t, timeMarker);
+    }
+
+    onTimeMarkerClick(timeMarkerIdNum) {
+        let timeMarker = this.sceneService.activeTimeLine.getTimeMarkerByIdNum(timeMarkerIdNum);
+        if(!timeMarker) return;
+        this.sceneService.moveToTime(timeMarker.getAt());
+    }
+
+    onTimeMarkerDblClick(timeMarkerIdNum) {
+        let timeMarker = this.sceneService.activeTimeLine.getTimeMarkerByIdNum(timeMarkerIdNum);
+        if(!timeMarker) return;
+        let dialogRef = this.dialog.open(TimeMarkerEditorComponent, {
+            data: { timeMarker: timeMarker}
+        });
+    }
 }

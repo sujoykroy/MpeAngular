@@ -1,5 +1,8 @@
-<mat-slider #slider min="0" value="0" step="{{1/25}}"
+<div style="position:absolute; left:0px; right:100px;">
+<mat-slider #slider min="0"
+    [value]="sceneService.timePos" step="{{1/25}}"
     [max]="sceneService.activeScene.duration"
     (input) = "sceneService.moveToTime(slider.value)"
     [thumb-label]="true" style="width:100%"></mat-slider>
 <master-time-line></master-time-line>
+</div>

@@ -30,10 +30,17 @@ export class MultiShapeTimeLine {
         if(existTimeMarker) {
             return existTimeMarker;
         }
-        let timeMarker = new TimeMarker(t, t.toString());
+        let timeMarker = new TimeMarker(t);
         this.timeMarkers.push(timeMarker);
         this.timeMarkers.sort(TimeMarker.compare);
         return timeMarker;
+    }
+
+    getTimeMarkerByIdNum(idNum) {
+        for(let timeMarker of this.timeMarkers) {
+            if(timeMarker.idNum == idNum) return timeMarker;
+        }
+        return null;
     }
 
     getClosestTimeMarker(t:number, tolerance:number=1/30) {
@@ -54,16 +61,17 @@ export class MultiShapeTimeLine {
 
     moveTimeMarkerTo(t, timeMarker) {
         let index = this.getTimeMarkerIndex(timeMarker);
-        if (index>0 && this.timeMarkers[index-1]>t) {
+        if (index>0 && this.timeMarkers[index-1].getAt()>t) {
             return false;
         }
-        if (index>0 && this.timeMarkers[index-1]>t) {
-            return false;
-        }
-        if (index<this.timeMarkers.length-1 && this.timeMarkers[index+1]<t) {
+        if (index<this.timeMarkers.length-1 && this.timeMarkers[index+1].getAt()<t) {
             return false;
         }
         timeMarker.setAt(t);
+        return true;
+    }
+
+    deleteTimeMarker(timeMarker) {
         return true;
     }
 

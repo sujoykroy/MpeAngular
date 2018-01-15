@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-
+import { FormsModule } from '@angular/forms';
 
 import { SceneService } from './misc/scene.service';
 import { ToolService } from './layout/tool.service';
@@ -22,28 +22,39 @@ import { ShapeThumbComponent } from './layout/shape-thumb/shape-thumb.component'
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { MasterTimeLineComponent } from './layout/master-time-line/master-time-line.component';
+import { TimeMarkerEditorComponent } from './layout/time-marker-editor/time-marker-editor.component';
+import { YesNoDialogComponent } from './layout/yes-no-dialog/yes-no-dialog.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    FooterComponent,
-    HeaderComponent,
-    ScenePaneComponent,
-    LibraryPaneComponent,
-    VerticalBarComponent,
-    SceneThumbComponent,
-    ToolButtonComponent,
-    SceneEditorComponent,
-    ShapeThumbComponent,
-    MasterTimeLineComponent,
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    MaterialModule,
-    BrowserAnimationsModule
-  ],
-  providers: [SceneService, ToolService, MpFileService],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        FooterComponent,
+        HeaderComponent,
+        ScenePaneComponent,
+        LibraryPaneComponent,
+        VerticalBarComponent,
+        SceneThumbComponent,
+        ToolButtonComponent,
+        SceneEditorComponent,
+        ShapeThumbComponent,
+        MasterTimeLineComponent,
+        TimeMarkerEditorComponent,
+        YesNoDialogComponent,
+    ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        MaterialModule,
+        BrowserAnimationsModule,
+        FormsModule
+    ],
+    providers: [
+        SceneService, ToolService, MpFileService
+    ],
+    entryComponents: [
+        TimeMarkerEditorComponent,
+        YesNoDialogComponent
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
