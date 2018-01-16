@@ -1,0 +1,27 @@
+<mat-tab-group [dynamicHeight]="true">
+  <mat-tab label="Picks">
+    <div class="color-button"
+         *ngFor="let fc of colorService.flatColors"
+        [style.backgroundColor] = "fc"
+        [class.selected] = "fc.toUpperCase() == flatColor.toUpperCase()"
+        (click) = "onFlatColorClick(fc)"
+    ></div>
+  </mat-tab>
+  <mat-tab label="Arena">
+    <input matInput [style.backgroundColor] = "flatColor" [(ngModel)] = "flatColor" type="text">
+    <div class="label">Hue</div>
+    <mat-slider min="0" max="1" step="0.01" [(ngModel)]="hue" ></mat-slider>
+    <div class="label">Saturation</div>
+    <mat-slider min="0" max="1" step="0.01" [(ngModel)]="saturation"></mat-slider>
+    <div class="label">Value</div>
+    <mat-slider min="0" max="1" step="0.01" [(ngModel)]="value"></mat-slider>
+    <div class="label">Alpha</div>
+    <mat-slider min="0" max="1" step="0.01" [(ngModel)]="alpha"></mat-slider>
+
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close>Close</button>
+      <button mat-button (click)="onUseThisColor()">Use This Color</button>
+    </mat-dialog-actions>
+  </mat-tab>
+</mat-tab-group>
+

@@ -25,6 +25,8 @@ import { MasterTimeLineComponent } from './layout/master-time-line/master-time-l
 import { TimeMarkerEditorComponent } from './layout/time-marker-editor/time-marker-editor.component';
 import { YesNoDialogComponent } from './layout/yes-no-dialog/yes-no-dialog.component';
 import { ShapePropComponent } from './layout/shape-prop/shape-prop.component';
+import { ColorPickerComponent } from './layout/color-picker/color-picker.component';
+import { ColorService } from './misc/color.service';
 
 @NgModule({
     declarations: [
@@ -42,6 +44,7 @@ import { ShapePropComponent } from './layout/shape-prop/shape-prop.component';
         TimeMarkerEditorComponent,
         YesNoDialogComponent,
         ShapePropComponent,
+        ColorPickerComponent,
     ],
     imports: [
         BrowserModule,
@@ -51,11 +54,12 @@ import { ShapePropComponent } from './layout/shape-prop/shape-prop.component';
         FormsModule
     ],
     providers: [
-        SceneService, ToolService, MpFileService
+        SceneService, ToolService, MpFileService, ColorService
     ],
     entryComponents: [
         TimeMarkerEditorComponent,
-        YesNoDialogComponent
+        YesNoDialogComponent,
+        ColorPickerComponent
     ],
     bootstrap: [AppComponent]
 })

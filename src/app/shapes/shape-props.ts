@@ -1,4 +1,4 @@
-import { Point } from '../commons';
+import { Point, Color } from '../commons';
 
 export class ShapeProp {
     propName: string;
@@ -37,7 +37,13 @@ export class FloatShapeProp extends ShapeProp {
     }
 
     getFormattedValue(value) {
-        if(value) return value.toFixed(3).toString();
+        if(value) {
+            if (value.toFixed) {
+                return value.toFixed(3).toString();
+            } else {
+                return value;
+            }
+        }
         return "0";
     }
 }
@@ -72,6 +78,22 @@ export class PointShapeProp extends ShapeProp {
 
     getFormattedValue(value) {
         return value.toText(2);
+    }
+}
+
+export class ColorShapeProp extends ShapeProp {
+    static TypeName:string = "color";
+
+    getTypeName():string {
+        return ColorShapeProp.TypeName;
+    }
+
+    parseValue(value) {
+        return Color.createFromHtml(value);
+    }
+
+    getFormattedValue(value) {
+        return value.toHtml();
     }
 }
 

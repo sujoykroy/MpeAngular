@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { SceneService } from '../../misc/scene.service';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { TimeMarkerEditorComponent } from '../time-marker-editor/time-marker-editor.component';
 
 @Component({

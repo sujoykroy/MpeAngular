@@ -1,5 +1,5 @@
 import {Point, Color, copyObject, parseColor, extendCtx } from '../commons'
-import { PointShapeProp, FloatShapeProp } from './shape-props';
+import { PointShapeProp, FloatShapeProp, ColorShapeProp } from './shape-props';
 
 export class Shape {
     static MOVE_TYPE_RESIZE = 1;
@@ -13,7 +13,10 @@ export class Shape {
         new PointShapeProp("xy"),
         new FloatShapeProp("width"),
         new FloatShapeProp("height"),
-        new FloatShapeProp("angle")
+        new FloatShapeProp("angle"),
+        new ColorShapeProp("fillColor"),
+        new ColorShapeProp("borderColor"),
+        new FloatShapeProp("borderWidth"),
     ]
 
     anchorAt:Point;

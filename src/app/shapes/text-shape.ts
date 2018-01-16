@@ -1,5 +1,6 @@
 import { RectangleShape } from './rectangle-shape';
 import { Color, parseColor } from '../commons';
+import { TextShapeProp, FloatShapeProp } from './shape-props';
 
 class FontDescription {
     fontSize:string;
@@ -82,6 +83,12 @@ export class TextShape extends RectangleShape {
 
     fontDesc: FontDescription;
 
+    static ShapeProps = [
+        new TextShapeProp("text"),
+        new TextShapeProp("font"),
+        new FloatShapeProp("exposure")
+    ]
+
     static createFromJson(jsonData) {
         let newOb = new TextShape(null, null, null, 0, 0, 0);
         newOb.copyFromJson(jsonData);
@@ -98,6 +105,10 @@ export class TextShape extends RectangleShape {
 
     getTypeName() {
         return TextShape.TypeName;
+    }
+
+    getShapeProps() {
+        return super.getShapeProps().concat(TextShape.ShapeProps);
     }
 
     toJsonOb() {
@@ -117,12 +128,30 @@ export class TextShape extends RectangleShape {
     setFont(font) {
         this.font = font;
         this.fontDesc = new FontDescription(font);
+        this._adjustSize();
     }
 
     setExposure(fraction:number) {
         this.exposure = fraction;
         let length:number = Math.abs(Math.floor(this.text.length*fraction))
         this.displayText = this.text.substr(0, length);
+        this._adjustSize();
+    }
+
+    setText(text) {
+        this.text = text;
+        this.setExposure(this.exposure);
+    }
+
+    _adjustSize() {
+        let lf = this.getTextLayout();
+        if (this.width< lf.layout.getWidth()) {
+            this.width = lf.layout.getWidth();
+        }
+        if (this.height< lf.layout.getHeight()) {
+            this.height = lf.layout.getHeight();
+        }
+        lf.layout.cleanup();
     }
 
     getTextLayout(text:string=null) {

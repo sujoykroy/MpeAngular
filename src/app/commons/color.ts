@@ -30,6 +30,19 @@ export class Color {
         return [this.red, this.green, this.blue, this.alpha].join(",");
     }
 
+    toHtml() {
+        let arr = [ Math.floor(this.red*255).toString(16),
+                    Math.floor(this.green*255).toString(16),
+                    Math.floor(this.blue*255).toString(16),
+                    Math.floor(this.alpha*255).toString(16) ]
+        for(let i=0; i<4; i++) {
+            if (arr[i].length<2) {
+                arr[i] = "0" + arr[i];
+            }
+        }
+        return "#" + arr.join("");
+    }
+
     static createFromHtml(text:String) {
         text = text.substr(1);
         let red = text.length>1 ? parseInt(text.substr(0, 2), 16)/255.0 : 1;
@@ -38,6 +51,7 @@ export class Color {
         let alpha = text.length>6 ? parseInt(text.substr(6, 2), 16)/255.0 : 1;
         return new Color(red, green, blue, alpha);
     }
+
 
     static parse(data) {
         let color = new Color(1, 1, 1, 1);

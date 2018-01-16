@@ -4,6 +4,11 @@
           type="number"
           [(ngModel)]="value"
         [placeholder]="shapeProp.propName" >
+    <input matInput *ngSwitchCase="'color'"
+          type="text"
+          [(ngModel)]="value"
+        [placeholder]="shapeProp.propName"
+        (click) = "openColorPicker()" >
     <input matInput *ngSwitchDefault
         type="text"
         [(ngModel)]="value"

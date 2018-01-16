@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SceneService }  from '../../misc/scene.service';
 import { ShapeProp, FloatShapeProp } from '../../shapes/shape-props';
+import { ColorPickerComponent } from '../color-picker/color-picker.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'shape-prop',
@@ -22,6 +24,19 @@ export class ShapePropComponent implements OnInit {
         return this.shapeProp.getFormattedValue(rawValue);
     }
 
-    constructor(public sceneService: SceneService) {}
+    constructor(public sceneService: SceneService,
+                private dialog: MatDialog) {}
     ngOnInit() {}
+
+    openColorPicker() {
+        let dialogRef = this.dialog.open(ColorPickerComponent, {
+            data: { flatColor: this.value },
+            width: "400px"
+        });
+        dialogRef.afterClosed().subscribe(result=>{
+            if(result) {
+                this.value = result;
+            }
+        });
+    }
 }

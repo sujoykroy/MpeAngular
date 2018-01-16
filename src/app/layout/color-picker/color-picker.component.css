@@ -1,0 +1,21 @@
+:host .color-button {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    cursor: pointer;
+}
+
+:host .color-button.selected {
+    border-color: black;
+}
+
+:host .mat-slider {
+    width: 100%;
+}
+
+:host .mat-input {
+    width: 100%;
+}

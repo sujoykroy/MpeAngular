@@ -35,6 +35,9 @@ export class TimeSlice {
     }
 
     valueAt(t) {
+        if (typeof(this.startValue) === "string") {
+            return this.startValue;
+        }
         return this.changeType.valueAt(this.startValue, this.endValue, t, this.duration);
     }
 

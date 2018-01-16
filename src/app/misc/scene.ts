@@ -66,11 +66,15 @@ export class Scene {
     }
 
     getDataUrl(width, height) {
+        if( "dataUrl" in this) {
+            return this["dataUrl"];
+        }
         let canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
         this.drawOnCanvas(canvas, 2);
-        return canvas.toDataURL();
+        this["dataUrl"] = canvas.toDataURL();
+        return this["dataUrl"];
     }
 
     drawOnCanvas(canvas, pad) {
