@@ -27,6 +27,7 @@ import { YesNoDialogComponent } from './layout/yes-no-dialog/yes-no-dialog.compo
 import { ShapePropComponent } from './layout/shape-prop/shape-prop.component';
 import { ColorPickerComponent } from './layout/color-picker/color-picker.component';
 import { ColorService } from './misc/color.service';
+import { SvgPlayerComponent } from './layout/svg-player/svg-player.component';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { ColorService } from './misc/color.service';
         YesNoDialogComponent,
         ShapePropComponent,
         ColorPickerComponent,
+        SvgPlayerComponent,
     ],
     imports: [
         BrowserModule,
@@ -59,7 +61,7 @@ import { ColorService } from './misc/color.service';
     entryComponents: [
         TimeMarkerEditorComponent,
         YesNoDialogComponent,
-        ColorPickerComponent
+        ColorPickerComponent, SvgPlayerComponent
     ],
     bootstrap: [AppComponent]
 })

@@ -9,7 +9,11 @@ import { Scene } from './../../misc/scene';
   styleUrls: ['./library-pane.component.css']
 })
 export class LibraryPaneComponent implements OnInit {
-    @Input() shapeTemplates = [];
+    @Input() shapeTemplates = [
+        Scene.createSingleShape("rectangle"),
+        Scene.createSingleShape("oval"),
+        Scene.createSingleShape("text")
+    ];
 
     constructor(private mpFileService: MpFileService,
                 public sceneService: SceneService) { }

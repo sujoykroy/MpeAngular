@@ -268,4 +268,12 @@ export class MultiShape extends Shape {
     draw(ctx, drawingSize=null, fixedBorder=true, rootShape=null, showNonRenderable=false) {
         MultiShape.drawShape(this, ctx, drawingSize, fixedBorder, rootShape, showNonRenderable); 
     }
+
+    getSVGNode() {
+        let node = super.getSVGNode();
+        for(let shape of this.shapes) {
+            node.addChild(shape.getSVGNode());
+        }
+        return node;
+    }
 }

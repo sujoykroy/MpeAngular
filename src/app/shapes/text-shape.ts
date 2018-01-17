@@ -1,5 +1,5 @@
 import { RectangleShape } from './rectangle-shape';
-import { Color, parseColor } from '../commons';
+import { Color, parseColor, Point } from '../commons';
 import { TextShapeProp, FloatShapeProp } from './shape-props';
 
 class FontDescription {
@@ -71,11 +71,11 @@ class TextLayout {
 export class TextShape extends RectangleShape {
     static TypeName = "text";
 
-    xAlign:number;
-    yAlign:number;
+    xAlign:number = TextLayout.HorizAlignment.center;
+    yAlign:number = TextLayout.VertAlignment.middle;
     text:string;
     displayText: string;
-    exposure: number;
+    exposure: number=1;
     font:string;
     fontColor: Color;
     lineAlign:number;
@@ -89,13 +89,21 @@ export class TextShape extends RectangleShape {
         new FloatShapeProp("exposure")
     ]
 
+    constructor(
+        anchorAt:Point, borderColor:any, fillColor:any,
+        width:number, height: number, cornerRadius:number,
+        text:string, font:string="12", fontColor:any="#000000") {
+        super(anchorAt, borderColor, fillColor, width, height, cornerRadius);
+        this.fontColor = parseColor(fontColor);
+        this.setFont(font);
+        this.setText(text);
+    }
+
     static createFromJson(jsonData) {
-        let newOb = new TextShape(null, null, null, 0, 0, 0);
+        let newOb = new TextShape(null, null, null, 0, 0, 0,
+                            jsonData.text, jsonData.font, jsonData.font_color);
         newOb.copyFromJson(jsonData);
-        newOb.text = jsonData.text;
-        newOb.setFont(jsonData.font);
         newOb.setExposure(jsonData.exposure);
-        newOb.fontColor = parseColor(jsonData.font_color);
         newOb.lineAlign = jsonData.line_align;
         newOb.maxWidthChars = parseInt(jsonData.max_width_chars);
         newOb.xAlign = parseInt(jsonData.x_align);
@@ -156,6 +164,9 @@ export class TextShape extends RectangleShape {
 
     getTextLayout(text:string=null) {
         let layout = new TextLayout();
+        if(!this.fontDesc) {
+            this.setFont(this.font);
+        }
         layout.setFontDescription(this.fontDesc)
 
         if (!text) {

@@ -1,7 +1,9 @@
 import {Point, Color, copyObject, parseColor, extendCtx } from '../commons'
 import { PointShapeProp, FloatShapeProp, ColorShapeProp } from './shape-props';
+import { SVGNode } from '../commons/svg-node';
 
 export class Shape {
+
     static MOVE_TYPE_RESIZE = 1;
     static MOVE_TYPE_XY = 2;
     static MOVE_TYPE_ROTATE = 3;
@@ -304,4 +306,20 @@ export class Shape {
     }
 
     drawPath(ctx) {}
+
+    getSVGNode() {
+        let node = new SVGNode("svg");
+        node.setParam("width", this.width);
+        node.setParam("height", this.height);
+        if (this.borderColor) {
+            node.setParam("stroke", this.borderColor.toHtml());
+            node.setParam("stroke-width", this.borderWidth);
+        }
+        if (this.fillColor) {
+            node.setParam("fill", this.fillColor.toHtml());
+        }
+        node.setParam("x", this.translation.x);
+        node.setParam("y", this.translation.y);
+        return node;
+    }
 }

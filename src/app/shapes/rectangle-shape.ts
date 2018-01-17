@@ -1,5 +1,5 @@
 import { Shape } from './shape'
-import { Color, copyObject, Point } from '../commons'
+import { Color, copyObject, Point, SVGNode } from '../commons'
 import { drawRoundedRectangle } from '../commons'
 
 export class RectangleShape extends Shape {
@@ -8,14 +8,14 @@ export class RectangleShape extends Shape {
     cornerRadius: number;
 
     static create(width:number, height:number,
-                  borderColor:any=null, fillColor:any=null, radius:number=0) {
+                  borderColor:any=null, fillColor:any=null, cornerRadius:number=0) {
         return new RectangleShape(
             new Point(width*0.5, height*0.5),
-            borderColor, fillColor, width, height, radius);
+            borderColor, fillColor, width, height, cornerRadius);
     }
 
     constructor(
-        anchorAt:Point, borderColor:Color, fillColor:Color,
+        anchorAt:Point, borderColor:any, fillColor:any,
         width:number, height: number, cornerRadius:number) {
         super(anchorAt, borderColor, fillColor, width, height);
         this.cornerRadius = cornerRadius;
@@ -52,5 +52,14 @@ export class RectangleShape extends Shape {
 
     drawPath(ctx) {
         drawRoundedRectangle(ctx,0, 0, this.width, this.height, this.cornerRadius);
+    }
+
+    getSVGNode() {
+        let node = super.getSVGNode();
+        let rectNode = new SVGNode("rect");
+        rectNode.setParam("width", this.width);
+        rectNode.setParam("height", this.height);
+        node.addChild(rectNode);
+        return node;
     }
 }

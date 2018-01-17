@@ -5,3 +5,4 @@ export { Polygon } from './polygon';
 export { Curve } from './curve';
 export { extendCtx } from './ctx-wrapper';
 export { OrderedDict } from './ordered_dict';
+export { SVGNode } from './svg-node';

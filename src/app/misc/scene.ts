@@ -1,5 +1,7 @@
 import { Shape, MultiShape } from '../shapes';
-import { Point, extendCtx } from '../commons';
+import { RectangleShape, OvalShape, TextShape } from '../shapes';
+
+import { Point, extendCtx, SVGNode } from '../commons';
 import { MultiShapeTimeLine } from '../time-lines/multishape-time-line';
 
 export class Scene {
@@ -28,6 +30,32 @@ export class Scene {
     static createFromJson(jsonData) {
         let size = new Point(jsonData.root.doc.width, jsonData.root.doc.height);
         return new Scene(size, MultiShape.createFromJson(jsonData.root.shape));
+    }
+
+    static createSingleShape(shapeTypeName, width=100, height=100) {
+        let scene = new Scene(new Point(width, height));
+        let shape:Shape;
+        let shapeW:number = width*0.8;
+        let shapeH:number = height*0.8;
+        switch(shapeTypeName) {
+            case RectangleShape.TypeName:
+                shape = new RectangleShape(new Point(shapeW*0.5, shapeH*0.5),
+                                        "#000000", "#FFFFFF00", shapeW, shapeH, 0);
+                break;
+            case OvalShape.TypeName:
+                shape = new OvalShape( new Point(shapeW*0.5, shapeH*0.5),
+                                        "#000000", "#FFFFFF00", shapeW, shapeH);
+                break;
+            case TextShape.TypeName:
+                let textShape = new TextShape( new Point(shapeW*0.5, shapeH*0.5),
+                                        "#000000", "#FFFFFF00",
+                                        shapeW, shapeH, 0, "Text");
+                shape = textShape;
+                break;
+        }
+        scene.addShape(shape);
+        shape.moveTo(new Point(width*0.5, height*0.5));
+        return scene;
     }
 
     toJsonOb() {
@@ -106,4 +134,19 @@ export class Scene {
         this.draw(ctx)
         ctx.restore();
    }
+
+    getSVG(scale:number) {
+        scale = 1;
+        let svgNode = new SVGNode("svg");
+        let viewBox = "0 0 " + this.size.x.toString() + " " + this.size.y.toString();
+        //svgNode.setParam("viewBox", viewBox);
+        //svgNode.transform(null, null, null, scale);
+        svgNode.setParam("x", 0);
+        svgNode.setParam("y", 0);
+
+        svgNode.setParam("width", this.size.x*scale);
+        svgNode.setParam("height", this.size.y*scale);
+        svgNode.addChild(this.containerShape.getSVGNode())
+        return svgNode.domElement;
+    }
 }

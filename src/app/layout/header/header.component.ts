@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolService } from '../tool.service'
+import { SceneService } from '../../misc/scene.service';
+import { MatDialog } from '@angular/material';
+import { SvgPlayerComponent } from '../svg-player/svg-player.component';
 
 @Component({
   selector: 'app-header',
@@ -9,13 +12,21 @@ import { ToolService } from '../tool.service'
 
 
 export class HeaderComponent implements OnInit {
-  toolCategories = [];
-  tools = {};
+    toolCategories = [];
+    tools = {};
 
-  constructor(toolService: ToolService) {
-    this.toolCategories = Object.keys(toolService.tools);
-    this.tools = toolService.tools;
-  }
+    constructor(toolService: ToolService,
+              private sceneService:SceneService,
+              private dialog:MatDialog) {
+        this.toolCategories = Object.keys(toolService.tools);
+        this.tools = toolService.tools;
+    }
 
-  ngOnInit() {}
+    showSVG() {
+        this.dialog.open(SvgPlayerComponent, {
+            data: { svg: this.sceneService.activeScene.getSVG(0.25) }
+        });
+    }
+
+    ngOnInit() {}
 }
