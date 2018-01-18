@@ -308,8 +308,9 @@ export class Shape {
     drawPath(ctx) {}
 
     getSVGNode() {
-        let node = new SVGNode("svg");
-        node.setParam("width", this.width);
+        let node = new SVGNode("g");
+        node.setParam("id", this.idNum);
+        node.transform(this.translation);
         node.setParam("height", this.height);
         if (this.borderColor) {
             node.setParam("stroke", this.borderColor.toHtml());
@@ -318,8 +319,15 @@ export class Shape {
         if (this.fillColor) {
             node.setParam("fill", this.fillColor.toHtml());
         }
-        node.setParam("x", this.translation.x);
-        node.setParam("y", this.translation.y);
         return node;
+    }
+
+    getSVGAnimValue(propName, value) {
+        if (propName == "xy") {
+            return {x: value.x, y: value.y}
+        }
+        let paramValue = {};
+        paramValue[propName] = value;
+        return paramValue;
     }
 }

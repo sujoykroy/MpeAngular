@@ -1,5 +1,5 @@
 import { Shape } from './shape';
-import { Curve } from '../commons';
+import { Curve, SVGNode } from '../commons';
 
 export class OvalShape extends Shape {
     static TypeName = "oval";
@@ -29,5 +29,14 @@ export class OvalShape extends Shape {
         ctx.scale(this.width, this.height);
         OvalShape.OvalCurve.drawPath(ctx);
         ctx.restore();
+    }
+
+    getSVGNode() {
+        let node = super.getSVGNode();
+        let circleNode = new SVGNode("path");
+        circleNode.setParam("d",
+            OvalShape.OvalCurve.getSVGText(this.width, this.height));
+        node.addChild(circleNode);
+        return node;
     }
 }

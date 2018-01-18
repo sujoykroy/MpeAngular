@@ -1,4 +1,4 @@
-import { OrderedDict } from '../commons';
+import { OrderedDict, SVGNode, SVGAnim } from '../commons';
 import { ShapeTimeLine } from './shape-time-line';
 import { TimeSlice } from './time-slice';
 import { TimeMarker } from './time-marker';
@@ -95,5 +95,14 @@ export class MultiShapeTimeLine {
             }
             shapeTimeLine.moveTo(t);
         }
+    }
+
+    getSVGAnim() {
+        let anim:SVGAnim = new SVGAnim();
+        for (let i=0; i<this.shapeTimeLines.length; i++) {
+            let shapeTimeLine = this.shapeTimeLines.getItemAtIndex(i);
+            anim.merge(shapeTimeLine.getSVGAnim());
+        }
+        return anim;
     }
 }

@@ -53,6 +53,23 @@ export class Curve {
         }
     }
 
+    getSVGText(w, h) {
+        let ps = [];
+        ps.push("M"+ (w*this.origin.x).toString() + " " +
+                     (h*this.origin.y).toString());
+        for (let bezierPoint of this.bezierPoints) {
+            let cs = []
+            cs.push((w*bezierPoint.control1.x).toString() + " " +
+                    (h*bezierPoint.control1.y).toString());
+            cs.push((w*bezierPoint.control2.x).toString() + " " +
+                    (h*bezierPoint.control2.y).toString());
+            cs.push((w*bezierPoint.dest.x).toString() + " " +
+                    (h*bezierPoint.dest.y).toString());
+            ps.push("C " + cs.join(", "));
+        }
+        return ps.join(" ");
+    }
+
     static createOval() {
         let oval = new Curve(new Point(1, 0.5));
         oval.closed = true;

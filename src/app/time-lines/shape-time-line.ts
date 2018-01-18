@@ -1,4 +1,4 @@
-import { OrderedDict } from '../commons';
+import { OrderedDict, SVGNode, SVGAnim } from '../commons';
 import { PropTimeLine } from './prop-time-line';
 
 export class ShapeTimeLine {
@@ -34,5 +34,14 @@ export class ShapeTimeLine {
         for (let key of this.propTimeLines.keys) {
             this.propTimeLines.getItem(key).moveTo(t);
         }
+    }
+
+    getSVGAnim() {
+        let anim:SVGAnim = new SVGAnim();
+        for (let i=0; i<this.propTimeLines.length; i++) {
+            let propTimeLine = this.propTimeLines.getItemAtIndex(i);
+            anim.merge(propTimeLine.getSVGAnim());
+        }
+        return anim;
     }
 }

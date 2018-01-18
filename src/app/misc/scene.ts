@@ -136,17 +136,13 @@ export class Scene {
    }
 
     getSVG(scale:number) {
-        scale = 1;
         let svgNode = new SVGNode("svg");
         let viewBox = "0 0 " + this.size.x.toString() + " " + this.size.y.toString();
-        //svgNode.setParam("viewBox", viewBox);
-        //svgNode.transform(null, null, null, scale);
-        svgNode.setParam("x", 0);
-        svgNode.setParam("y", 0);
+        svgNode.setParam("viewBox", viewBox);
 
         svgNode.setParam("width", this.size.x*scale);
         svgNode.setParam("height", this.size.y*scale);
-        svgNode.addChild(this.containerShape.getSVGNode())
+        svgNode.addChild(this.containerShape.getSVGNode());
         return svgNode.domElement;
     }
 }

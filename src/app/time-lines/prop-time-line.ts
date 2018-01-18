@@ -1,5 +1,5 @@
 import { TimeSlice } from './time-slice';
-import { OrderedDict, copyObject } from '../commons';
+import { OrderedDict, copyObject, SVGAnim } from '../commons';
 import { TimeMarker } from './time-marker';
 
 export class PropTimeLine {
@@ -106,5 +106,22 @@ export class PropTimeLine {
             }
             elapsed += timeSlice.duration;
         }
+    }
+
+    getSVGAnim() {
+        let anim:SVGAnim = new SVGAnim();
+        let elapsed:number = 0;
+        for (let i=0; i<this.timeSlices.length; i++) {
+            let timeSlice = this.timeSlices.getItemAtIndex(i);
+            anim.add(this.shape.idNum, elapsed,
+                this.shape.getSVGAnimateValue(this.propName, timeSlice.startValue));
+
+            elapsed += timeSlice.duration;
+            if (i == this.timeSlices.length-1) {
+                anim.add(this.shape.idNum, elapsed,
+                    this.shape.getSVGAnimateValue(this.propName, timeSlice.endValue));
+            }
+        }
+        return anim;
     }
 }
