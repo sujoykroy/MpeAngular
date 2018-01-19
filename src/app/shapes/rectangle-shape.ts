@@ -57,9 +57,17 @@ export class RectangleShape extends Shape {
     getSVGNode() {
         let node = super.getSVGNode();
         let rectNode = new SVGNode("rect");
+        rectNode.setParam("id", this.getSVGIdNum("r"));
         rectNode.setParam("width", this.width);
         rectNode.setParam("height", this.height);
         node.addChild(rectNode);
         return node;
+    }
+
+    getSVGAnimValue(propName, value) {
+        if(propName == "width" || propName == "height") {
+            return this.createShapeParamValue(this.getSVGIdNum("r"), propName, value)
+        }
+        return super.getSVGAnimValue(propName, value);
     }
 }

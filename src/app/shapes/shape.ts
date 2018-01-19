@@ -13,6 +13,7 @@ export class Shape {
 
     static ShapeProps = [
         new PointShapeProp("xy"),
+        new PointShapeProp("anchorAt"),
         new FloatShapeProp("width"),
         new FloatShapeProp("height"),
         new FloatShapeProp("angle"),
@@ -307,11 +308,15 @@ export class Shape {
 
     drawPath(ctx) {}
 
+    getSVGIdNum(prefix:string="g") {
+        return prefix + this.idNum;
+    }
+
     getSVGNode() {
         let node = new SVGNode("g");
-        node.setParam("id", this.idNum);
-        node.transform(this.translation);
-        node.setParam("height", this.height);
+        node.setParam("id", this.getSVGIdNum());
+        node.transform(this.translation, this.angle);
+
         if (this.borderColor) {
             node.setParam("stroke", this.borderColor.toHtml());
             node.setParam("stroke-width", this.borderWidth);
@@ -322,12 +327,15 @@ export class Shape {
         return node;
     }
 
-    getSVGAnimValue(propName, value) {
-        if (propName == "xy") {
-            return {x: value.x, y: value.y}
-        }
-        let paramValue = {};
+    createShapeParamValue(shapeId, propName, value) {
+        let paramValue:any = {};
         paramValue[propName] = value;
-        return paramValue;
+        let shapeParamValue:any = {}
+        shapeParamValue[shapeId] = paramValue;
+        return shapeParamValue;
+    }
+
+    getSVGAnimValue(propName, value) {
+        return this.createShapeParamValue(this.getSVGIdNum(), propName, value);
     }
 }

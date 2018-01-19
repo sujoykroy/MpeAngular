@@ -135,13 +135,17 @@ export class Scene {
         ctx.restore();
    }
 
-    getSVG(scale:number) {
+    getSVG(scale:number, delay:number=0) {
         let svgNode = new SVGNode("svg");
         let viewBox = "0 0 " + this.size.x.toString() + " " + this.size.y.toString();
         svgNode.setParam("viewBox", viewBox);
 
         svgNode.setParam("width", this.size.x*scale);
         svgNode.setParam("height", this.size.y*scale);
+
+        let anim = this.getMainTimeLine().getSVGAnim();
+        anim.delay = delay;
+        svgNode.addChild(anim);
         svgNode.addChild(this.containerShape.getSVGNode());
         return svgNode.domElement;
     }

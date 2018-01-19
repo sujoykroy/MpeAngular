@@ -1,5 +1,5 @@
 import { RectangleShape } from './rectangle-shape';
-import { Color, parseColor, Point } from '../commons';
+import { Color, parseColor, Point, SVGNode } from '../commons';
 import { TextShapeProp, FloatShapeProp } from './shape-props';
 
 class FontDescription {
@@ -209,5 +209,29 @@ export class TextShape extends RectangleShape {
         ctx.fillStyle = this.fontColor.getStyleValue();
         ctx.fillText(lf.layout.text, lf.x, lf.y);
         lf.layout.cleanup();
+    }
+
+    getSVGNode() {
+        let node = super.getSVGNode();
+        let textNode = new SVGNode("text");
+        textNode.setParam("id", this.getSVGIdNum("t"));
+        textNode.addChild(document.createTextNode(this.text))
+        node.addChild(textNode);
+
+        let lf = this.getTextLayout();
+        textNode.transform(lf);
+        if (this.fontDesc) {
+            textNode.setStyle("font-size", this.fontDesc.fontSize);
+            if (this.fontDesc.fontFamily) {
+                textNode.setStyle("font-family", this.fontDesc.fontFamily);
+            }
+        }
+        if (this.fontColor) {
+            textNode.setStyle("fill", this.fontColor.toHtml());
+        }
+        textNode.setStyle("alignment-baseline", "hanging");
+        lf.layout.cleanup();
+
+        return node;
     }
 }

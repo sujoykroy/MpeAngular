@@ -113,13 +113,15 @@ export class PropTimeLine {
         let elapsed:number = 0;
         for (let i=0; i<this.timeSlices.length; i++) {
             let timeSlice = this.timeSlices.getItemAtIndex(i);
-            anim.add(this.shape.idNum, elapsed,
-                this.shape.getSVGAnimateValue(this.propName, timeSlice.startValue));
+            anim.addShapeIdNumPropValues(
+                elapsed,
+                this.shape.getSVGAnimValue(this.propName, timeSlice.startValue));
 
             elapsed += timeSlice.duration;
             if (i == this.timeSlices.length-1) {
-                anim.add(this.shape.idNum, elapsed,
-                    this.shape.getSVGAnimateValue(this.propName, timeSlice.endValue));
+                anim.addShapeIdNumPropValues(
+                    elapsed,
+                    this.shape.getSVGAnimValue(this.propName, timeSlice.endValue));
             }
         }
         return anim;

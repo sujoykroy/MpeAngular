@@ -98,7 +98,7 @@ export class MultiShapeTimeLine {
     }
 
     getSVGAnim() {
-        let anim:SVGAnim = new SVGAnim();
+        let anim:SVGAnim = new SVGAnim(this.shape.getSVGIdNum());
         for (let i=0; i<this.shapeTimeLines.length; i++) {
             let shapeTimeLine = this.shapeTimeLines.getItemAtIndex(i);
             anim.merge(shapeTimeLine.getSVGAnim());

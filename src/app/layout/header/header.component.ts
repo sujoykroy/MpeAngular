@@ -22,9 +22,15 @@ export class HeaderComponent implements OnInit {
         this.tools = toolService.tools;
     }
 
-    showSVG() {
+    showSVG(allScenes:boolean=true) {
+        let svg:any;
+        if (allScenes) {
+            svg = this.sceneService.getSVG(0.25);
+        } else {
+            svg = this.sceneService.activeScene.getSVG(0.25);
+        }
         this.dialog.open(SvgPlayerComponent, {
-            data: { svg: this.sceneService.activeScene.getSVG(0.25) }
+            data: { svg: svg }
         });
     }
 

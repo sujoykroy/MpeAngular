@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Scene } from './scene';
-import { Point } from '../commons';
+import { Point, SVGNode } from '../commons';
 import { TimeMarker } from '../time-lines/time-marker';
 import { Shape } from '../shapes/shape';
 import { ShapeProp } from '../shapes/shape-props';
@@ -81,5 +81,25 @@ export class SceneService {
 
     isActiveScene(scene: Scene) {
         return this.activeScene && this.activeScene.equals(scene);
+    }
+
+    getSVG(scale:number) {
+        let svgNode = new SVGNode("svg");
+        let viewBox = "0 0 " + this.sceneSize.x.toString() + " " + this.sceneSize.y.toString();
+        svgNode.setParam("viewBox", viewBox);
+
+        svgNode.setParam("width", this.sceneSize.x*scale);
+        svgNode.setParam("height", this.sceneSize.y*scale);
+
+        let elapsed:number =  0;
+        let htmlData:string = "";
+        for(let scene of this.scenes) {
+            if (scene.containerShape.shapes.length == 0) continue;
+            let sceneSvg:Element = scene.getSVG(scale, elapsed);
+            htmlData += sceneSvg.innerHTML;
+            elapsed += scene.duration;
+        }
+        svgNode.domElement.innerHTML = htmlData;
+        return svgNode.domElement;
     }
 }
