@@ -14,6 +14,17 @@ export class Polygon {
         return polygon;
     }
 
+    addPoint(point:Point) {
+        this.points.push(point);
+    }
+
+    getPointAt(index:number) {
+        if (index<0) {
+            index += this.points.length;
+        }
+        return this.points[index];
+    }
+
     toJsonOb() {
         let jsonOb:any = {};
         jsonOb.point = [];

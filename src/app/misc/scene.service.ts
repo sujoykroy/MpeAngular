@@ -16,6 +16,8 @@ export class SceneService {
     activeShape:Shape;
     shapeProps:ShapeProp[] = [];
 
+    createMode = null;
+
     timePos: number = 0;
 
     constructor() {
@@ -38,9 +40,15 @@ export class SceneService {
         if (!scene.equals(this.activeScene)) {
             this.timePos = 0;
         }
+        this.startShapeCreation(null);
         this.activeScene = scene;
         this.activeTimeLine = scene.getMainTimeLine();
         this.activeTimeMarkers = this.activeTimeLine.timeMarkers;
+    }
+
+
+    startShapeCreation(shapeTypeName) {
+        this.createMode = shapeTypeName
     }
 
     setActiveShape(shape:Shape) {

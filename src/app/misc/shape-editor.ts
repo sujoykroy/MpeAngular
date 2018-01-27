@@ -1,94 +1,27 @@
 import { Shape, MultiShape } from '../shapes';
-import { Point, Color, parseColor,  drawRoundedRectangle} from '../commons';
+import { Point, Color, parseColor } from '../commons';
+import { EditBox, RectangleEditBox, OvalEditBox } from '../shapes/edit-boxes';
 
 const RESIZE_BOX_BORDER_COLOR = parseColor("#000000");
 const RESIZE_BOX_FILL_COLOR = parseColor("#FFFFFF");
-const RESIZE_BOX_WIDTH = 20;
-const RESIZE_BOX_HEIGHT = 10;
+export const RESIZE_BOX_WIDTH = 20;
+export const RESIZE_BOX_HEIGHT = 10;
 const RESIZE_BOX_SIZE = (RESIZE_BOX_WIDTH+RESIZE_BOX_HEIGHT)*0.5;
+
+const ANCHOR_BOX_BORDER_COLOR = parseColor("#FF0000");
+const ANCHOR_BOX_FILL_COLOR = parseColor("#FFFFFF55");
 
 const ROTATION_BOX_BORDER_COLOR = parseColor("#000000");
 const ROTATION_BOX_FILL_COLOR = parseColor("#FFFFFF");
 const ROTATION_BOX_RADIUS = 10;
 
-const ANCHOR_BOX_BORDER_COLOR = parseColor("#FF0000");
-const ANCHOR_BOX_FILL_COLOR = parseColor("#FFFFFF55");
-
 const BOX_OFFSET = 0;
 
-class EditBox {
-    borderWidth:number = 1;
-    center:Point;
-    name: string;
-    offset:Point;
-
-    constructor(name:string, offset:number[], private borderColor:Color, private fillColor:Color) {
-        this.center = new Point(0, 0);
-        this.name = name;
-        this.offset = new Point(offset[0], offset[1]);
-    }
-
-    setCenter(point: Point) {
-        this.center.copyFrom(point);
-        this.center.translate(this.offset.x, this.offset.y);
-    }
-
-    isWithin(point:Point, rotateAngle:number=0) { return false; }
-
-    drawPath(ctx, rotateAngle=0) {}
-
-    drawBorder(ctx) {
-        ctx.lineWidth = this.borderWidth;
-        ctx.strokeStyle = this.borderColor.getStyleValue();
-        ctx.stroke();
-    }
-
-    drawFill(ctx) {
-        ctx.fillStyle = this.fillColor.getStyleValue();
-        ctx.fill();
-    }
-
-    equals(other: EditBox) {
-        return this.name == other.name;
-    }
-}
-
-class RectangleEditBox extends EditBox {
-    constructor(name:string, private angle:number, offset:number[],
-                private width:number = RESIZE_BOX_WIDTH,
-                private height:number = RESIZE_BOX_HEIGHT) {
-        super(name, offset, RESIZE_BOX_BORDER_COLOR, RESIZE_BOX_FILL_COLOR);
-    }
-
-    isWithin(point:Point, rotateAngle) {
-        point = point.copy();
-        point.translate(-this.center.x, -this.center.y);
-        point.rotateCoordinate(rotateAngle+this.angle);
-        return point.x >= -this.width*0.5 &&
-               point.x <= this.width*0.5 &&
-               point.y >= -this.height*0.5 &&
-               point.y <= this.height*0.5;
-    }
-
-    drawPath(ctx, rotateAngle) {
-        ctx.save();
-        ctx.translate(this.center.x, this.center.y);
-        ctx.rotate((rotateAngle+this.angle)*Math.PI/180);
-        drawRoundedRectangle(ctx,-this.width*0.5, -this.height*0.5, this.width, this.height);
-        ctx.restore();
-    }
-}
-
-class OvalEditBox extends EditBox {
-    radius:number = ROTATION_BOX_RADIUS;
-
-    isWithin(point:Point, rotateAngle:number=0) {
-        return this.center.distance(point)<=this.radius;
-    }
-
-    drawPath(ctx, rotateAngle=0) {
-        ctx.beginPath();
-        ctx.arc(this.center.x, this.center.y, this.radius, 0, Math.PI*2);
+class ResizeEditBox extends RectangleEditBox {
+    constructor(name:string, angle:number, offset:number[],
+                width:number=RESIZE_BOX_WIDTH, height:number=RESIZE_BOX_HEIGHT) {
+        super(name, offset, RESIZE_BOX_BORDER_COLOR, RESIZE_BOX_FILL_COLOR,
+              angle, width, height);
     }
 }
 
@@ -108,11 +41,11 @@ export class ShapeEditor {
     editBoxes: EditBox[] = []
 
     constructor() {
-        this.resizeBoxLeft = new RectangleEditBox("sL", 90, [-BOX_OFFSET, 0]);
-        this.resizeBoxTop = new RectangleEditBox("sT", 180, [0, -BOX_OFFSET]);
-        this.resizeBoxRight = new RectangleEditBox("sR", 270, [BOX_OFFSET, 0]);
-        this.resizeBoxBottom = new RectangleEditBox("sB", 0, [0, BOX_OFFSET]);
-        this.resizeBoxBottomRight = new RectangleEditBox("sBR", 0, [BOX_OFFSET, BOX_OFFSET],
+        this.resizeBoxLeft = new ResizeEditBox("sL", 90, [-BOX_OFFSET, 0]);
+        this.resizeBoxTop = new ResizeEditBox("sT", 180, [0, -BOX_OFFSET]);
+        this.resizeBoxRight = new ResizeEditBox("sR", 270, [BOX_OFFSET, 0]);
+        this.resizeBoxBottom = new ResizeEditBox("sB", 0, [0, BOX_OFFSET]);
+        this.resizeBoxBottomRight = new ResizeEditBox("sBR", 0, [BOX_OFFSET, BOX_OFFSET],
                                     RESIZE_BOX_SIZE, RESIZE_BOX_SIZE);
 
         this.editBoxes.push(this.resizeBoxLeft);
@@ -131,12 +64,14 @@ export class ShapeEditor {
                 offset = [-BOX_OFFSET, BOX_OFFSET];
             }
             let rotEditBox = new OvalEditBox(
-                ("r" + (i+1)), offset, ROTATION_BOX_BORDER_COLOR, ROTATION_BOX_FILL_COLOR);
+                ("r" + (i+1)), offset, ROTATION_BOX_BORDER_COLOR,
+                ROTATION_BOX_FILL_COLOR, ROTATION_BOX_RADIUS);
             this.rotationBoxes.push(rotEditBox);
             this.editBoxes.push(rotEditBox);
         }
 
-        this.anchorBox = new OvalEditBox("a", [0, 0], ANCHOR_BOX_BORDER_COLOR, ANCHOR_BOX_FILL_COLOR);
+        this.anchorBox = new OvalEditBox("a", [0, 0],ANCHOR_BOX_BORDER_COLOR,
+                            ANCHOR_BOX_FILL_COLOR, ROTATION_BOX_RADIUS);
         this.anchorBox.borderWidth *= 2;
         this.editBoxes.push(this.anchorBox);
     }

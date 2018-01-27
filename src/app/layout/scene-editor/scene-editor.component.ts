@@ -5,6 +5,7 @@ import { SceneService } from '../../misc/scene.service';
 import { Point, extendCtx } from '../../commons';
 import { ShapeEditor } from '../../misc/shape-editor';
 import { Shape, MultiShape } from '../../shapes';
+import { PolygonShapeCreator } from '../../shape-creators';
 
 @Component({
   selector: 'scene-editor',
@@ -24,6 +25,7 @@ export class SceneEditorComponent implements OnInit {
     movementType;
 
     shapeEditor: ShapeEditor = null;
+    shapeCreator:any = null;
 
     @Input() scene:Scene;
     @Input() fakeChange;
@@ -51,7 +53,15 @@ export class SceneEditorComponent implements OnInit {
         this.transformMousePoints(this.mouseInitPos);
         this.transformMousePoints(this.mousePos);
 
-        this.selectItemAt(this.mousePos);
+        if (this.sceneService.createMode) {
+            if (!this.shapeCreator) {
+                if (this.sceneService.createMode == "polygon")
+                    this.shapeCreator = new PolygonShapeCreator();
+            }
+            this.shapeCreator.onMouseDown(this.mousePos);
+        } else {
+            this.selectItemAt(this.mousePos);
+        }
         this.draw();
     }
 
@@ -59,7 +69,10 @@ export class SceneEditorComponent implements OnInit {
     onMouseMove(event) {
         this.mousePos.assign(event.layerX, event.layerY);
         this.transformMousePoints(this.mousePos);
-        if (this.mouseIsDown) {
+        if (this.sceneService.createMode && this.shapeCreator) {
+            this.shapeCreator.onMouseMove(this.mousePos);
+            this.draw();
+        }else if (this.mouseIsDown) {
             this.movementType = this.shapeEditor.moveActiveItem(this.mouseInitPos, this.mousePos);
             this.draw();
         }
@@ -76,6 +89,9 @@ export class SceneEditorComponent implements OnInit {
         let shapeTemplate = event.dataTransfer.getData("shapeTemplate");
 
         if(shapeTemplate) {
+            this.shapeCreator = null;
+            this.sceneService.startShapeCreation(null);
+
             let scene = this.sceneService.activeScene;
             let jsonData = JSON.parse(shapeTemplate);
             let rootShape = jsonData.root.shape;
@@ -100,24 +116,28 @@ export class SceneEditorComponent implements OnInit {
     @HostListener("mouseup", ["$event"])
     onMouseUp(event) {
         this.mouseIsDown = false;
-        this.shapeEditor.reload();
-        let shape:Shape = this.shapeEditor.sceneShape;
-        switch(this.movementType) {
-            case Shape.MOVE_TYPE_RESIZE:
-                this.sceneService.insertShapePropValue(shape, "width");
-                this.sceneService.insertShapePropValue(shape, "height");
-                break;
-            case Shape.MOVE_TYPE_ANCHOR:
-                this.sceneService.insertShapePropValue(shape, "anchorAt");
-                break;
-            case Shape.MOVE_TYPE_XY:
-                this.sceneService.insertShapePropValue(shape, "xy");
-                break;
-            case Shape.MOVE_TYPE_ROTATE:
-                this.sceneService.insertShapePropValue(shape, "angle");
-                break;
+        if (this.sceneService.createMode && this.shapeCreator) {
+            this.shapeCreator.onMouseUp(this.mousePos);
+        } else {
+            this.shapeEditor.reload();
+            let shape:Shape = this.shapeEditor.sceneShape;
+            switch(this.movementType) {
+                case Shape.MOVE_TYPE_RESIZE:
+                    this.sceneService.insertShapePropValue(shape, "width");
+                    this.sceneService.insertShapePropValue(shape, "height");
+                    break;
+                case Shape.MOVE_TYPE_ANCHOR:
+                    this.sceneService.insertShapePropValue(shape, "anchorAt");
+                    break;
+                case Shape.MOVE_TYPE_XY:
+                    this.sceneService.insertShapePropValue(shape, "xy");
+                    break;
+                case Shape.MOVE_TYPE_ROTATE:
+                    this.sceneService.insertShapePropValue(shape, "angle");
+                    break;
+            }
+            this.movementType = null;
         }
-        this.movementType = null;
     }
 
     selectItemAt(point:Point) {
@@ -181,7 +201,11 @@ export class SceneEditorComponent implements OnInit {
         ctx.scale(this.sceneScale, this.sceneScale);
         scene.draw(ctx)
 
-        this.shapeEditor.draw(ctx);
+        if (this.sceneService.createMode && this.shapeCreator) {
+            this.shapeCreator.draw(ctx);
+        } else {
+            this.shapeEditor.draw(ctx);
+        }
         ctx.restore();
     }
 

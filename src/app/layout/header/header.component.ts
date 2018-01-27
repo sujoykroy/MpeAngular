@@ -34,5 +34,9 @@ export class HeaderComponent implements OnInit {
         });
     }
 
+    createNewPolygon() {
+        this.sceneService.startShapeCreation("polygon")
+    }
+
     ngOnInit() {}
 }
