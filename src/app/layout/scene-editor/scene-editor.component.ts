@@ -5,7 +5,7 @@ import { SceneService } from '../../misc/scene.service';
 import { Point, extendCtx } from '../../commons';
 import { ShapeEditor } from '../../misc/shape-editor';
 import { Shape, MultiShape } from '../../shapes';
-import { PolygonShapeCreator } from '../../shape-creators';
+import { PolygonShapeCreator, CurveShapeCreator } from '../../shape-creators';
 
 @Component({
   selector: 'scene-editor',
@@ -55,8 +55,11 @@ export class SceneEditorComponent implements OnInit {
 
         if (this.sceneService.createMode) {
             if (!this.shapeCreator) {
-                if (this.sceneService.createMode == "polygon")
+                if (this.sceneService.createMode == "polygon") {
                     this.shapeCreator = new PolygonShapeCreator();
+                } else if (this.sceneService.createMode == "curve") {
+                    this.shapeCreator = new CurveShapeCreator();
+                }
             }
             this.shapeCreator.onMouseDown(this.mousePos);
         } else {
@@ -70,9 +73,9 @@ export class SceneEditorComponent implements OnInit {
         this.mousePos.assign(event.layerX, event.layerY);
         this.transformMousePoints(this.mousePos);
         if (this.sceneService.createMode && this.shapeCreator) {
-            this.shapeCreator.onMouseMove(this.mousePos);
+            this.shapeCreator.onMouseMove(this.mousePos, this.mouseIsDown);
             this.draw();
-        }else if (this.mouseIsDown) {
+        } else if (this.mouseIsDown) {
             this.movementType = this.shapeEditor.moveActiveItem(this.mouseInitPos, this.mousePos);
             this.draw();
         }

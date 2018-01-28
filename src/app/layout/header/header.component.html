@@ -3,5 +3,6 @@
       <tool-button  *ngFor="let tool of tools[category]" [tool]="tool"></tool-button>
   </div>
   <button mat-button (click)="createNewPolygon()">Polygon</button>
+  <button mat-button (click)="createNewCurve()">Curve</button>
   <button mat-button (click)="showSVG()">SVG</button>
 </div>

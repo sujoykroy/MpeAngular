@@ -1,5 +1,5 @@
 import { Shape } from './shape';
-import { Polygon, parseColor } from '../commons';
+import { Polygon, Point, parseColor } from '../commons';
 
 
 export class PolygonShape extends Shape {

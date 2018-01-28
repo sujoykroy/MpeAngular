@@ -1,6 +1,7 @@
 import { Point } from './point';
+import { Rectangle } from './rectangle';
 
-class BezierPoint {
+export class BezierPoint {
     constructor (public control1:Point, public control2:Point, public dest:Point) {}
 
     static createFromJson(jsonData) {
@@ -18,12 +19,26 @@ class BezierPoint {
         jsonOb.d = this.dest.toText();
         return jsonOb;
     }
+
+    setDest(point:Point) {
+        this.dest.copyFrom(point);
+    }
+
+    setControl1(point:Point) {
+        this.control1.copyFrom(point);
+    }
+
+    setControl2(point:Point) {
+        this.control2.copyFrom(point);
+    }
 }
 
 export class Curve {
-    bezierPoints:BezierPoint[] = [];
+    bezierPoints:BezierPoint[];
     closed:boolean = false;
-    constructor(public origin:Point) {}
+    constructor(public origin:Point) {
+        this.bezierPoints = [];
+    }
 
     static createFromJson(jsonData) {
         let curve = new Curve(Point.parse(jsonData.origin));
@@ -41,6 +56,49 @@ export class Curve {
             jsonOb.bp.push(bezierPoint.toJsonOb());
         }
         return jsonOb;
+    }
+
+    setOrigin(origin:Point) {
+        this.origin.copyFrom(origin);
+    }
+
+    addBezierPoint(bezierPoint) {
+        this.bezierPoints.push(bezierPoint);
+    }
+
+    getBezierPointAt(index:number) {
+        if(index<0) {
+            index += this.bezierPoints.length;
+        }
+        return this.bezierPoints[index];
+    }
+
+    getBoundRect() {
+        let rect = new Rectangle(this.origin.copy(), this.origin.copy());
+        for (let bzp of this.bezierPoints) {
+            rect.expandToInclude(bzp.control1);
+            rect.expandToInclude(bzp.control2);
+            rect.expandToInclude(bzp.dest);
+        }
+        return rect;
+    }
+
+    translate(dpoint:Point, sign=1) {
+        this.origin.translate(sign*dpoint.x, sign*dpoint.y);
+        for (let bzp of this.bezierPoints) {
+            bzp.dest.translate(sign*dpoint.x, sign*dpoint.y);
+            bzp.control1.translate(sign*dpoint.x, sign*dpoint.y);
+            bzp.control2.translate(sign*dpoint.x, sign*dpoint.y);
+        }
+    }
+
+    scale(sx:number, sy:number) {
+        this.origin.scale(sx, sy);
+        for (let bzp of this.bezierPoints) {
+            bzp.dest.scale(sx, sy);
+            bzp.control1.scale(sx, sy);
+            bzp.control2.scale(sx, sy);
+        }
     }
 
     drawPath(ctx) {

@@ -29,6 +29,13 @@ export class Point {
         this.y = y;
     }
 
+    getInBetween(other:Point, frac:number) {
+        return new Point(
+            this.x + (other.x-this.x)*frac,
+            this.y + (other.y-this.y)*frac
+        );
+    }
+
     assign(x:number, y:number) {
         this.x = x;
         this.y = y;

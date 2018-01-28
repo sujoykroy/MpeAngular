@@ -1,9 +1,16 @@
 import { Shape } from './shape';
-import { Curve } from '../commons';
+import { Curve, Point } from '../commons';
 
 export class CurveShape extends Shape {
     static TypeName = "curve_shape";
-    curves:Curve[] = [];
+    curves:Curve[];
+
+    constructor(
+        anchorAt:Point, borderColor:any, fillColor:any,
+        width:number, height: number) {
+        super(anchorAt, borderColor, fillColor, width, height);
+        this.curves = [];
+    }
 
     static createFromJson(jsonData) {
         let newOb = new CurveShape(null, null, null, 0, 0);

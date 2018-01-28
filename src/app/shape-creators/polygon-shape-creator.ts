@@ -30,7 +30,7 @@ export class PolygonShapeCreator {
         }
     }
 
-    onMouseMove(mousePos:Point) {
+    onMouseMove(mousePos:Point, mouseIsDown:boolean) {
         this.editBoxes[this.editBoxes.length-1].setCenter(mousePos);
         this.polygon.getPointAt(-1).copyFrom(mousePos);
     }
