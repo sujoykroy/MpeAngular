@@ -1,8 +1,13 @@
 import { Point } from './point';
+import { Rectangle } from './rectangle';
 
 export class Polygon {
-    points: Point[] = [];
+    points: Point[];
     closed = false;
+
+    constructor() {
+        this.points = [];
+    }
 
     static createFromJson(jsonData) {
         let polygon = new Polygon();
@@ -14,8 +19,29 @@ export class Polygon {
         return polygon;
     }
 
+    copy() {
+        let newOb:Polygon = new Polygon();
+        for (let point of this.points){
+            newOb.points.push(point.copy());
+        }
+        newOb.closed = this.closed;
+        return newOb;
+    }
+
     addPoint(point:Point) {
         this.points.push(point);
+    }
+
+    translate(dpoint:Point, sign=1) {
+        for(let point of this.points) {
+            point.translate(sign*dpoint.x, sign*dpoint.y);
+        }
+    }
+
+    scale(sx:number, sy:number) {
+        for(let point of this.points) {
+            point.scale(sx, sy);
+        }
     }
 
     getPointAt(index:number) {
@@ -23,6 +49,14 @@ export class Polygon {
             index += this.points.length;
         }
         return this.points[index];
+    }
+
+    getBoundRect() {
+        let rect = new Rectangle(this.points[0].copy(), this.points[0].copy());
+        for (let point of this.points) {
+            rect.expandToInclude(point);
+        }
+        return rect;
     }
 
     toJsonOb() {

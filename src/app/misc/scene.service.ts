@@ -81,6 +81,10 @@ export class SceneService {
             timeMarker, shape, propName, propValue, null);
     }
 
+    addShape(shape:Shape) {
+        this.activeScene.addShape(shape);
+    }
+
     moveToTime(t) {
         this.timePos = t;
         this.activeTimeLine.moveTo(this.timePos);

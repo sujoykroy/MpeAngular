@@ -6,3 +6,4 @@ export { Curve } from './curve';
 export { extendCtx } from './ctx-wrapper';
 export { OrderedDict } from './ordered_dict';
 export { SVGNode, SVGAnim } from './svg-node';
+export { Rectangle } from './rectangle';

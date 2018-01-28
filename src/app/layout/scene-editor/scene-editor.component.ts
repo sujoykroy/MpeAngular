@@ -140,6 +140,19 @@ export class SceneEditorComponent implements OnInit {
         }
     }
 
+    @HostListener("dblclick", ["$event"])
+    onDoubleClick(event) {
+        if (this.sceneService.createMode && this.shapeCreator) {
+            this.shapeCreator.onDoubleClick(this.mousePos);
+            let newShape:Shape = this.shapeCreator.getFinishedShape();
+            if (newShape) {
+                this.sceneService.addShape(newShape);
+            }
+            this.shapeCreator = null;
+            this.sceneService.startShapeCreation(null);
+        }
+    }
+
     selectItemAt(point:Point) {
         if (!this.shapeEditor.selectItemAt(point)) {
             let scene = this.sceneService.activeScene;

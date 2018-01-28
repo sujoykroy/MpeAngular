@@ -1,10 +1,17 @@
 import { Shape } from './shape';
-import { Polygon } from '../commons';
+import { Polygon, parseColor } from '../commons';
 
 
 export class PolygonShape extends Shape {
     static TypeName = "polygon_shape";
-    polygons: Polygon[] = [];
+    polygons: Polygon[];
+
+    constructor(
+        anchorAt:Point, borderColor:any, fillColor:any,
+        width:number, height: number) {
+        super(anchorAt, borderColor, fillColor, width, height);
+        this.polygons = [];
+    }
 
     static createFromJson(jsonData) {
         let newOb = new PolygonShape(null, null, null, 0, 0);
@@ -31,6 +38,17 @@ export class PolygonShape extends Shape {
             jsonOb.polygon.push(polygon.toJsonOb());
         }
         return jsonOb;
+    }
+
+    copy(deepCopy:boolean = false):Shape {
+        let newOb = new PolygonShape(
+            this.anchorAt, this.borderColor, this.fillColor,
+            this.width, this.height);
+        this.copyInto(newOb);
+        for(let polygon of this.polygons) {
+            newOb.polygons.push(polygon.copy());
+        }
+        return newOb;
     }
 
     drawPath(ctx) {
