@@ -18,8 +18,14 @@ export class CurveShapeCreator {
     }
 
     onMouseDown(mousePos:Point) {
-        this.editBoxes[this.editBoxes.length-1].setCenter(mousePos);
-        if (this.curve.bezierPoints.length==1) {
+        if (this.curve.bezierPoints.length>0) {
+            this.editBoxes.push(
+                new OvalEditBox(
+                    this.editBoxes.length.toString(), [0, 0],
+                    OVAL_EDIT_BOX_BORDER_COLOR,
+                    CONTROL_EDIT_BOX_FILL_COLOR, 10)
+            );
+        } else {
             this.editBoxes.push(
                 new OvalEditBox(
                     this.editBoxes.length.toString(), [0, 0],
@@ -27,26 +33,19 @@ export class CurveShapeCreator {
                     OVAL_EDIT_BOX_FILL_COLOR, 10)
             );
             this.curve.setOrigin(mousePos);
-        } else {
-            this.editBoxes.push(
-                new OvalEditBox(
-                    this.editBoxes.length.toString(), [0, 0],
-                    OVAL_EDIT_BOX_BORDER_COLOR,
-                    CONTROL_EDIT_BOX_FILL_COLOR, 10)
-            );
         }
         this.editBoxes[this.editBoxes.length-1].setCenter(mousePos);
     }
 
     onMouseMove(mousePos:Point, mouseIsDown:boolean) {
         if (mouseIsDown) {
-            this.editBoxes[this.editBoxes.length-1].setCenter(mousePos);
             if (this.curve.bezierPoints.length == 0) {
                 this.curve.origin.copyFrom(mousePos);
             } else {
                 let bzp:BezierPoint = this.curve.getBezierPointAt(-1);
-                let control2:Point = bzp.dest.diff(mousePos);
+                let control2:Point = mousePos.diff(bzp.dest);
                 control2.scale(-1, -1);
+                control2.translate(bzp.dest.x, bzp.dest.y);
                 bzp.setControl2(control2);
                 this.editBoxes[this.editBoxes.length-3].setCenter(control2);
             }
@@ -59,14 +58,13 @@ export class CurveShapeCreator {
             } else {
                 prevPoint = this.curve.getBezierPointAt(-2).dest;
             }
-            this.curve.getBezierPointAt(-1);
             bzp.setDest(mousePos);
             bzp.setControl1(prevPoint.getInBetween(bzp.dest, 0.25));
             bzp.setControl2(prevPoint.getInBetween(bzp.dest, 0.75));
 
-            this.editBoxes[this.editBoxes.length-3].setCenter(bzp.dest);
+            this.editBoxes[this.editBoxes.length-3].setCenter(bzp.control1);
             this.editBoxes[this.editBoxes.length-2].setCenter(bzp.control2);
-            this.editBoxes[this.editBoxes.length-1].setCenter(bzp.control1);
+            this.editBoxes[this.editBoxes.length-1].setCenter(bzp.dest);
         }
     }
 

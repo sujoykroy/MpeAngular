@@ -20,6 +20,10 @@ export class BezierPoint {
         return jsonOb;
     }
 
+    copy() {
+        return new BezierPoint(this.control1.copy(), this.control2.copy(), this.dest.copy());
+    }
+
     setDest(point:Point) {
         this.dest.copyFrom(point);
     }
@@ -56,6 +60,15 @@ export class Curve {
             jsonOb.bp.push(bezierPoint.toJsonOb());
         }
         return jsonOb;
+    }
+
+    copy() {
+        let newOb:Curve = new Curve(this.origin.copy());
+        for (let bzp of this.bezierPoints){
+            newOb.bezierPoints.push(bzp.copy());
+        }
+        newOb.closed = this.closed;
+        return newOb;
     }
 
     setOrigin(origin:Point) {

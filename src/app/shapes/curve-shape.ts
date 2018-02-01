@@ -40,6 +40,17 @@ export class CurveShape extends Shape {
         return jsonOb;
     }
 
+    copy(deepCopy:boolean = false):Shape {
+        let newOb = new CurveShape(
+            this.anchorAt, this.borderColor, this.fillColor,
+            this.width, this.height);
+        this.copyInto(newOb);
+        for(let curve of this.curves) {
+            newOb.curves.push(curve.copy());
+        }
+        return newOb;
+    }
+
     drawPath(ctx) {
         ctx.save();
         ctx.beginPath();

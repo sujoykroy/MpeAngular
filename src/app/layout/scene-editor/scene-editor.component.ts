@@ -3,7 +3,7 @@ import { HostListener,  ViewContainerRef, EventEmitter} from '@angular/core';
 import { Scene } from '../../misc/scene';
 import { SceneService } from '../../misc/scene.service';
 import { Point, extendCtx } from '../../commons';
-import { ShapeEditor } from '../../misc/shape-editor';
+import { ShapeEditor } from '../../shape-editors/shape-editor';
 import { Shape, MultiShape } from '../../shapes';
 import { PolygonShapeCreator, CurveShapeCreator } from '../../shape-creators';
 

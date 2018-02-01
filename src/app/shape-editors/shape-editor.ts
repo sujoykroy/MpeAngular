@@ -1,6 +1,7 @@
-import { Shape, MultiShape } from '../shapes';
+import { Shape, MultiShape, PolygonShape } from '../shapes';
 import { Point, Color, parseColor } from '../commons';
 import { EditBox, RectangleEditBox, OvalEditBox } from '../shapes/edit-boxes';
+import { PolygonShapeEditor } from './polygon-shape-editor';
 
 const RESIZE_BOX_BORDER_COLOR = parseColor("#000000");
 const RESIZE_BOX_FILL_COLOR = parseColor("#FFFFFF");
@@ -38,9 +39,11 @@ export class ShapeEditor {
     resizeBoxBottomRight: RectangleEditBox;
 
     anchorBox: OvalEditBox;
-    editBoxes: EditBox[] = []
+    editBoxes: EditBox[];
+    extraEditor:any;
 
     constructor() {
+        this.editBoxes = []
         this.resizeBoxLeft = new ResizeEditBox("sL", 90, [-BOX_OFFSET, 0]);
         this.resizeBoxTop = new ResizeEditBox("sT", 180, [0, -BOX_OFFSET]);
         this.resizeBoxRight = new ResizeEditBox("sR", 270, [BOX_OFFSET, 0]);
@@ -81,8 +84,12 @@ export class ShapeEditor {
         if (sceneShape) {
             this.initSceneShape = sceneShape.copy();
             this.repositionBoxes();
+            if (sceneShape instanceof PolygonShape) {
+                this.extraEditor = new PolygonShapeEditor(sceneShape);
+            }
         } else {
             this.initSceneShape = null;
+            this.extraEditor = null;
         }
     }
 
@@ -94,6 +101,11 @@ export class ShapeEditor {
         if(!this.sceneShape) return false;
 
         let foundBox:EditBox = null;
+        if (this.extraEditor) {
+            if (this.extraEditor.selectItemAt(point)) {
+                return true;
+            }
+        }
         let absAngle = this.sceneShape.getAbsAngle(0);
         for(let editBox of this.editBoxes) {
             if (editBox.isWithin(point, absAngle)) {
@@ -107,6 +119,9 @@ export class ShapeEditor {
 
     moveActiveItem(startPoint:Point, endPoint:Point) {
         if (!this.sceneShape) return null;
+        if (this.extraEditor && this.extraEditor.selectedBox) {
+            return this.extraEditor.moveActiveItem(startPoint, endPoint);
+        }
         let movementType = null;
         if (this.selectedBox) {
             let relStartPoint = this.initSceneShape.transformPoint(startPoint);
@@ -218,6 +233,9 @@ export class ShapeEditor {
             editBox.drawPath(ctx, angle);
             ctx.restore();
             editBox.drawBorder(ctx);
+        }
+        if (this.extraEditor) {
+            this.extraEditor.draw(ctx);
         }
     }
 

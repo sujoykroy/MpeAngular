@@ -186,6 +186,25 @@ export class Shape {
         return point;
     }
 
+    getAncestors():Shape[] {
+        let shapes:Shape[] = [];
+        let shape:Shape = this;
+        while (shape) {
+            shape = shape.parentShape;
+            if (shape) {
+                shapes.splice(0, 0, shape);
+            }
+        }
+        return shapes;
+    }
+
+    getAbsTransformPoint(point:Point, rootShape:Shape = null) {
+        for(let shape of this.getAncestors()) {
+            point = shape.transformPoint(point);
+        }
+        return this.transformPoint(point);
+    }
+
     reverseTransformPoint(point:Point) {
         point = point.copy();
         point.translate(-this.anchorAt.x, -this.anchorAt.y);
