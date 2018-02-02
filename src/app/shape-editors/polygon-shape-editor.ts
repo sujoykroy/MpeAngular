@@ -34,9 +34,14 @@ export class PolygonShapeEditor {
     constructor(private polygonShape:PolygonShape) {
         this.initCenter = new Point(0, 0);
         this.editBoxes = [];
+        this.buildEditBoxes();
+    }
+
+    buildEditBoxes() {
+        this.editBoxes.length = 0;
         for (let polygon of this.polygonShape.polygons) {
             for (let point of polygon.points) {
-                this.editBoxes.push(new PointEditBox(point, polygonShape));
+                this.editBoxes.push(new PointEditBox(point, this.polygonShape));
             }
         }
     }

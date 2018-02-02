@@ -8,7 +8,8 @@ import { MimicShape } from './mimic-shape';
 import { ImageShape } from './image-shape';
 import { VideoShape } from './video-shape';
 import { TextShape } from './text-shape';
-import { Color, copyObject, Point, extendCtx, OrderedDict } from '../commons';
+import { Color, copyObject, Point, extendCtx, OrderedDict} from '../commons';
+import { Rectangle, parseColor, drawRoundedRectangle } from '../commons';
 
 export class MultiShape extends Shape {
     static TypeName = "multi_shape";
@@ -17,7 +18,7 @@ export class MultiShape extends Shape {
     timelines;
 
     static create(width=1, height=1):MultiShape {
-        return new MultiShape(new Point(0,0), null, null, width, height);
+        return new MultiShape(new Point(0,0), "#000000", null, width, height);
     }
 
     constructor(
@@ -275,5 +276,31 @@ export class MultiShape extends Shape {
             node.addChild(shape.getSVGNode());
         }
         return node;
+    }
+
+    autoFit() {
+        let boundRect:Rectangle;
+        for(let shape of this.shapes) {
+            shape.autoFit();
+            if(!boundRect) {
+                boundRect = shape.getAbsBoundRect();
+            } else {
+                boundRect.expandToIncludeRect(shape.getAbsBoundRect());
+            }
+        }
+        let absAnchorAt:Point = this.getAbsAnchorAt();
+        for(let shape of this.shapes) {
+            let shapeAbsAnchorAt:Point = shape.getAbsAnchorAt();
+            shapeAbsAnchorAt.translate(-boundRect.leftTop.x, -boundRect.leftTop.y);
+            shape.moveTo(shapeAbsAnchorAt);
+        }
+        this.anchorAt.translate(-boundRect.leftTop.x, -boundRect.leftTop.y);
+        this.moveTo(absAnchorAt);
+        this.setWidth(boundRect.width, false);
+        this.setHeight(boundRect.height, false);
+    }
+
+    drawPath(ctx) {
+        drawRoundedRectangle(ctx,0, 0, this.width, this.height, 0);
     }
 }

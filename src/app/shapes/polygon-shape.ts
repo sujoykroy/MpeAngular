@@ -1,5 +1,5 @@
 import { Shape } from './shape';
-import { Polygon, Point, parseColor } from '../commons';
+import { Polygon, Point, parseColor, Rectangle } from '../commons';
 
 
 export class PolygonShape extends Shape {
@@ -49,6 +49,28 @@ export class PolygonShape extends Shape {
             newOb.polygons.push(polygon.copy());
         }
         return newOb;
+    }
+
+    autoFit() {
+        let boundRect:Rectangle;
+        for(let polygon of this.polygons) {
+            if(!boundRect) {
+                boundRect = polygon.getBoundRect();
+            } else {
+                boundRect.expandToIncludeRect(polygon.getBoundRect());
+            }
+        }
+        let absAnchorAt:Point = this.getAbsAnchorAt();
+        for(let polygon of this.polygons) {
+            polygon.translate(boundRect.leftTop, -1);
+            polygon.scale(1/boundRect.width, 1/boundRect.height);
+        }
+        this.anchorAt.translate(
+                -boundRect.leftTop.x*this.width,
+                -boundRect.leftTop.y*this.height);
+        this.moveTo(absAnchorAt);
+        this.setWidth(boundRect.width*this.width);
+        this.setHeight(boundRect.height*this.height);
     }
 
     drawPath(ctx) {

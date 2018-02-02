@@ -141,6 +141,7 @@ export class SceneEditorComponent implements OnInit {
             }
             this.movementType = null;
         }
+        this.draw();
     }
 
     @HostListener("dblclick", ["$event"])
@@ -175,6 +176,8 @@ export class SceneEditorComponent implements OnInit {
     transformMousePoints(point) {
         point.translate(-this.sceneOffset.x, -this.sceneOffset.y);
         point.scale(1/this.sceneScale, 1/this.sceneScale);
+        let transformedPoint:Point = this.scene.containerShape.transformPoint(point);
+        point.copyFrom(transformedPoint);
     }
 
     resizeCanvas() {

@@ -1,4 +1,4 @@
-import {Point, Color, copyObject, parseColor, extendCtx } from '../commons'
+import {Point, Color, copyObject, parseColor, extendCtx, Rectangle } from '../commons'
 import { PointShapeProp, FloatShapeProp, ColorShapeProp } from './shape-props';
 import { SVGNode } from '../commons/svg-node';
 
@@ -356,5 +356,33 @@ export class Shape {
 
     getSVGAnimValue(propName, value) {
         return this.createShapeParamValue(this.getSVGIdNum(), propName, value);
+    }
+
+    autoFit() {}
+
+    getBoundRect():Rectangle {
+        let leftTop:Point = this.translation.copy();
+        let rightBottom:Point = leftTop.copy();
+        rightBottom.translate(this.width, this.height)
+        return new Rectangle(leftTop, rightBottom);
+    }
+
+    getAbsBoundRect():Rectangle {
+        let points:Point[] = [
+            new Point(0, 0),
+            new Point(this.width, 0),
+            new Point(this.width, this.height),
+            new Point(0, this.height)
+        ];
+        let rect:Rectangle;
+        for (let point of points) {
+            point = this.reverseTransformPoint(point);
+            if (!rect) {
+                rect = new Rectangle(point.copy(), point.copy());
+            } else {
+                rect.expandToInclude(point);
+            }
+        }
+        return rect;
     }
 }

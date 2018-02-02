@@ -94,6 +94,9 @@ export class ShapeEditor {
     }
 
     reload() {
+        if (this.sceneShape && this.sceneShape.parentShape) {
+            this.sceneShape.parentShape.autoFit();
+        }
         this.setSceneShape(this.sceneShape);
     }
 

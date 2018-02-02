@@ -31,4 +31,11 @@ export class Rectangle {
             this.rightBottom.y = point.y;
         }
     }
+
+    expandToIncludeRect(rect:Rectangle) {
+        this.expandToInclude(rect.leftTop);
+        this.expandToInclude(rect.rightBottom);
+        this.expandToInclude(new Point(rect.leftTop.x, rect.rightBottom.y));
+        this.expandToInclude(new Point(rect.rightBottom.x, rect.leftTop.y));
+    }
 }
