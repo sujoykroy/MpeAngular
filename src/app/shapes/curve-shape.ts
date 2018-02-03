@@ -1,7 +1,12 @@
 import { Shape } from './shape';
-import { Curve, Point } from '../commons';
+import { Curve, Point, parseColor } from '../commons';
 
 export class CurveShape extends Shape {
+    static OVAL_EDIT_BOX_BORDER_COLOR = parseColor("#000000");
+    static OVAL_EDIT_BOX_FILL_COLOR = parseColor("#FFFFFF");
+    static CONTROL_EDIT_BOX_FILL_COLOR = parseColor("#FFFF00");
+
+
     static TypeName = "curve_shape";
     curves:Curve[];
 

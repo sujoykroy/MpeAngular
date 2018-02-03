@@ -18,7 +18,7 @@ export class MultiShape extends Shape {
     timelines;
 
     static create(width=1, height=1):MultiShape {
-        return new MultiShape(new Point(0,0), "#000000", null, width, height);
+        return new MultiShape(new Point(0,0), null, null, width, height);
     }
 
     constructor(
@@ -107,8 +107,11 @@ export class MultiShape extends Shape {
         return newOb;
     }
 
-    addShape(shape:Shape) {
+    addShape(shape:Shape, transform:boolean=true) {
+        let pos:Point = shape.getAbsAnchorAt();
         this.shapes.push(shape);
+        pos = this.getAbsTransformPoint(pos);
+        shape.moveTo(pos);
         shape.setParentShape(this);
     }
 

@@ -1,7 +1,8 @@
-import { Shape, MultiShape, PolygonShape } from '../shapes';
+import { Shape, MultiShape, PolygonShape, CurveShape } from '../shapes';
 import { Point, Color, parseColor } from '../commons';
 import { EditBox, RectangleEditBox, OvalEditBox } from '../shapes/edit-boxes';
 import { PolygonShapeEditor } from './polygon-shape-editor';
+import { CurveShapeEditor } from './curve-shape-editor';
 
 const RESIZE_BOX_BORDER_COLOR = parseColor("#000000");
 const RESIZE_BOX_FILL_COLOR = parseColor("#FFFFFF");
@@ -86,6 +87,8 @@ export class ShapeEditor {
             this.repositionBoxes();
             if (sceneShape instanceof PolygonShape) {
                 this.extraEditor = new PolygonShapeEditor(sceneShape);
+            } else if (sceneShape instanceof CurveShape) {
+                this.extraEditor = new CurveShapeEditor(sceneShape);
             }
         } else {
             this.initSceneShape = null;
@@ -268,5 +271,8 @@ export class ShapeEditor {
         this.resizeBoxRight.setCenter(points[6]);
         this.resizeBoxBottom.setCenter(points[7]);
         this.anchorBox.setCenter(points[8]);
+        if (this.extraEditor) {
+            this.extraEditor.repositionBoxes();
+        }
     }
 }

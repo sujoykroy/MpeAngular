@@ -3,6 +3,9 @@ import { Polygon, Point, parseColor, Rectangle } from '../commons';
 
 
 export class PolygonShape extends Shape {
+    static POINT_EDIT_BOX_BORDER_COLOR = parseColor("#000000");
+    static POINT_EDIT_BOX_FILL_COLOR = parseColor("#FFFF00");
+
     static TypeName = "polygon_shape";
     polygons: Polygon[];
 
@@ -69,8 +72,8 @@ export class PolygonShape extends Shape {
                 -boundRect.leftTop.x*this.width,
                 -boundRect.leftTop.y*this.height);
         this.moveTo(absAnchorAt);
-        this.setWidth(boundRect.width*this.width);
-        this.setHeight(boundRect.height*this.height);
+        this.setWidth(boundRect.width*this.width, false);
+        this.setHeight(boundRect.height*this.height, false);
     }
 
     drawPath(ctx) {

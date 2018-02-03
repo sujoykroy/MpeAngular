@@ -59,6 +59,16 @@ export class Point {
         return Math.sqrt(dx*dx + dy*dy);
     }
 
+    add(other:Point) {
+        this.x += other.x;
+        this.y += other.y;
+    }
+
+    subtract(other:Point) {
+        this.x -= other.x;
+        this.y -= other.y;
+    }
+
     getAngle() {
         return Math.atan2(this.y, this.x)*180/Math.PI;
     }

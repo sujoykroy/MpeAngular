@@ -109,7 +109,8 @@ export class SceneEditorComponent implements OnInit {
 
             let point = new Point(event.layerX, event.layerY);
             this.transformMousePoints(point);
-            shape.moveTo(point);
+            point = this.scene.containerShape.transformPoint(point);
+			shape.moveTo(point);
 
             this.draw();
             scene.reUpdate();
@@ -121,7 +122,7 @@ export class SceneEditorComponent implements OnInit {
         this.mouseIsDown = false;
         if (this.sceneService.createMode && this.shapeCreator) {
             this.shapeCreator.onMouseUp(this.mousePos);
-        } else {
+        } else if(this.shapeEditor.sceneShape) {
             this.shapeEditor.reload();
             let shape:Shape = this.shapeEditor.sceneShape;
             switch(this.movementType) {
@@ -159,6 +160,8 @@ export class SceneEditorComponent implements OnInit {
 
     selectItemAt(point:Point) {
         if (!this.shapeEditor.selectItemAt(point)) {
+            point = this.scene.containerShape.transformPoint(point);
+
             let scene = this.sceneService.activeScene;
             let foundShape:Shape = null;
             for(let i=scene.containerShape.shapes.length-1; i>=0; i--) {
@@ -176,8 +179,6 @@ export class SceneEditorComponent implements OnInit {
     transformMousePoints(point) {
         point.translate(-this.sceneOffset.x, -this.sceneOffset.y);
         point.scale(1/this.sceneScale, 1/this.sceneScale);
-        let transformedPoint:Point = this.scene.containerShape.transformPoint(point);
-        point.copyFrom(transformedPoint);
     }
 
     resizeCanvas() {

@@ -145,10 +145,18 @@ export class Shape {
     }
 
     getXy() {
-        return this.getAbsAnchorAt();
+        let point:Point = this.getAbsAnchorAt();
+        if (this.parentShape) {
+            point.subtract(this.parentShape.anchorAt);
+        }
+        return point;
     }
 
     setXy(point) {
+        if (this.parentShape) {
+            point = point.copy();
+            point.add(this.parentShape.anchorAt);
+        }
         this.moveTo(point);
     }
 

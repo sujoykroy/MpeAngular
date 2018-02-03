@@ -12,6 +12,10 @@ export class EditBox {
         this.offset = new Point(offset[0], offset[1]);
     }
 
+    setFillColor(color:Color) {
+        this.fillColor = color;
+    }
+
     setCenter(point: Point) {
         this.center.copyFrom(point);
         this.center.translate(this.offset.x, this.offset.y);

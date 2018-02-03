@@ -38,6 +38,11 @@ export class BezierPoint {
 }
 
 export class Curve {
+    static POINT_TYPE_CONTROL_1 = 0
+    static POINT_TYPE_CONTROL_2 = 1
+    static POINT_TYPE_DEST = 2
+    static POINT_TYPE_ORIGIN = 3
+
     bezierPoints:BezierPoint[];
     closed:boolean = false;
     constructor(public origin:Point) {

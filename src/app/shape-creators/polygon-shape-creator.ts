@@ -2,9 +2,6 @@ import { PolygonShape } from '../shapes';
 import { Polygon, Point, Color, parseColor, Rectangle } from '../commons';
 import { OvalEditBox } from '../shapes/edit-boxes';
 
-const OVAL_EDIT_BOX_BORDER_COLOR = parseColor("#000000");
-const OVAL_EDIT_BOX_FILL_COLOR = parseColor("#FFFFFF");
-
 export class PolygonShapeCreator {
     polygon:Polygon;
     polygonShape: PolygonShape;
@@ -20,13 +17,20 @@ export class PolygonShapeCreator {
         this.editBoxes.push(
             new OvalEditBox(
                 this.editBoxes.length.toString(), [0, 0],
-                OVAL_EDIT_BOX_BORDER_COLOR,
-                OVAL_EDIT_BOX_FILL_COLOR, 10)
+                PolygonShape.POINT_EDIT_BOX_BORDER_COLOR,
+                PolygonShape.POINT_EDIT_BOX_FILL_COLOR, 10)
         );
         this.editBoxes[this.editBoxes.length-1].setCenter(mousePos);
         this.polygon.addPoint(mousePos.copy());
         if (this.polygon.points.length==1) {
             this.polygon.addPoint(mousePos.copy());
+            this.editBoxes.push(
+            new OvalEditBox(
+                this.editBoxes.length.toString(), [0, 0],
+                PolygonShape.POINT_EDIT_BOX_BORDER_COLOR,
+                PolygonShape.POINT_EDIT_BOX_FILL_COLOR, 10)
+            );
+            this.editBoxes[this.editBoxes.length-1].setCenter(mousePos);
         }
     }
 

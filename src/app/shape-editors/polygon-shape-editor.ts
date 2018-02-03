@@ -2,12 +2,11 @@ import { Point, parseColor } from '../commons';
 import { PolygonShape } from '../shapes';
 import { OvalEditBox } from '../shapes/edit-boxes';
 
-const OVAL_EDIT_BOX_BORDER_COLOR = parseColor("#000000");
-const OVAL_EDIT_BOX_FILL_COLOR = parseColor("#FFFFFF");
-
 class PointEditBox extends OvalEditBox {
     constructor(private polyPoint: Point, private polygonShape:PolygonShape) {
-        super("", [0, 0], OVAL_EDIT_BOX_BORDER_COLOR, OVAL_EDIT_BOX_FILL_COLOR, 5);
+        super("", [0, 0],
+            PolygonShape.POINT_EDIT_BOX_BORDER_COLOR,
+            PolygonShape.POINT_EDIT_BOX_FILL_COLOR, 10);
         this.updateCenter();
     }
 
@@ -43,6 +42,12 @@ export class PolygonShapeEditor {
             for (let point of polygon.points) {
                 this.editBoxes.push(new PointEditBox(point, this.polygonShape));
             }
+        }
+    }
+
+    repositionBoxes() {
+        for(let editBox of this.editBoxes) {
+            editBox.updateCenter();
         }
     }
 

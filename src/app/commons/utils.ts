@@ -46,3 +46,10 @@ export function createJsonOb(object) {
     }
     return object;
 }
+
+export function drawStroke(ctx, color, borderWidth) {
+    if (!color) return;
+    ctx.lineWidth = borderWidth;
+    ctx.strokeStyle = color.getStyleValue();
+    ctx.stroke();
+}

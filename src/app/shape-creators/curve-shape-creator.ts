@@ -2,10 +2,6 @@ import { CurveShape } from '../shapes';
 import { Curve, Point, BezierPoint, Color, parseColor, Rectangle } from '../commons';
 import { OvalEditBox } from '../shapes/edit-boxes';
 
-const OVAL_EDIT_BOX_BORDER_COLOR = parseColor("#000000");
-const OVAL_EDIT_BOX_FILL_COLOR = parseColor("#FFFFFF");
-const CONTROL_EDIT_BOX_FILL_COLOR = parseColor("#FFFF00");
-
 export class CurveShapeCreator {
     curve:Curve;
     curveShape: CurveShape;
@@ -22,15 +18,15 @@ export class CurveShapeCreator {
             this.editBoxes.push(
                 new OvalEditBox(
                     this.editBoxes.length.toString(), [0, 0],
-                    OVAL_EDIT_BOX_BORDER_COLOR,
-                    CONTROL_EDIT_BOX_FILL_COLOR, 10)
+                    CurveShape.OVAL_EDIT_BOX_BORDER_COLOR,
+                    CurveShape.CONTROL_EDIT_BOX_FILL_COLOR, 10)
             );
         } else {
             this.editBoxes.push(
                 new OvalEditBox(
                     this.editBoxes.length.toString(), [0, 0],
-                    OVAL_EDIT_BOX_BORDER_COLOR,
-                    OVAL_EDIT_BOX_FILL_COLOR, 10)
+                    CurveShape.OVAL_EDIT_BOX_BORDER_COLOR,
+                    CurveShape.OVAL_EDIT_BOX_FILL_COLOR, 10)
             );
             this.curve.setOrigin(mousePos);
         }
@@ -43,10 +39,23 @@ export class CurveShapeCreator {
                 this.curve.origin.copyFrom(mousePos);
             } else {
                 let bzp:BezierPoint = this.curve.getBezierPointAt(-1);
-                let control2:Point = mousePos.diff(bzp.dest);
+                let control2:Point = mousePos.diff(bzp.dest)
                 control2.scale(-1, -1);
                 control2.translate(bzp.dest.x, bzp.dest.y);
+
+                let prevDestPoint:Point;
+                if (this.curve.bezierPoints.length==1) {
+                    prevDestPoint = this.curve.origin.copy();
+                } else {
+                    prevDestPoint = this.curve.getBezierPointAt(-2).dest;
+                }
+                let control1:Point = prevDestPoint.getInBetween(
+                    control2, bzp.control1.distance(prevDestPoint)/prevDestPoint.distance(control2))
+
+                bzp.setControl1(control1);
                 bzp.setControl2(control2);
+
+                this.editBoxes[this.editBoxes.length-4].setCenter(control1);
                 this.editBoxes[this.editBoxes.length-3].setCenter(control2);
             }
             this.editBoxes[this.editBoxes.length-1].setCenter(mousePos);
@@ -73,21 +82,21 @@ export class CurveShapeCreator {
             this.editBoxes.push(
                 new OvalEditBox(
                     this.editBoxes.length.toString(), [0, 0],
-                    OVAL_EDIT_BOX_BORDER_COLOR,
-                    CONTROL_EDIT_BOX_FILL_COLOR, 10)
+                    CurveShape.OVAL_EDIT_BOX_BORDER_COLOR,
+                    CurveShape.CONTROL_EDIT_BOX_FILL_COLOR, 10)
             );
         }
         this.editBoxes.push(
             new OvalEditBox(
                 this.editBoxes.length.toString(), [0, 0],
-                OVAL_EDIT_BOX_BORDER_COLOR,
-                CONTROL_EDIT_BOX_FILL_COLOR, 10)
+                CurveShape.OVAL_EDIT_BOX_BORDER_COLOR,
+                CurveShape.CONTROL_EDIT_BOX_FILL_COLOR, 10)
         );
         this.editBoxes.push(
             new OvalEditBox(
                 this.editBoxes.length.toString(), [0, 0],
-                OVAL_EDIT_BOX_BORDER_COLOR,
-                OVAL_EDIT_BOX_FILL_COLOR, 10)
+                CurveShape.OVAL_EDIT_BOX_BORDER_COLOR,
+                CurveShape.OVAL_EDIT_BOX_FILL_COLOR, 10)
         );
         this.editBoxes[this.editBoxes.length-3].setCenter(mousePos);
         this.editBoxes[this.editBoxes.length-2].setCenter(mousePos);
@@ -131,6 +140,18 @@ export class CurveShapeCreator {
         ctx.beginPath();
         this.curve.drawPath(ctx);
         ctx.restore();
+        this.curveShape.drawBorder(ctx);
+
+        let lastDestPoint:Point = this.curve.origin;
+        ctx.beginPath();
+        for(let bzp of this.curve.bezierPoints) {
+            ctx.moveTo(lastDestPoint.x, lastDestPoint.y);
+            ctx.lineTo(bzp.control1.x, bzp.control1.y);
+
+            ctx.moveTo(bzp.dest.x, bzp.dest.y);
+            ctx.lineTo(bzp.control2.x, bzp.control2.y);
+            lastDestPoint = bzp.dest;
+        }
         this.curveShape.drawBorder(ctx);
         for(let editBox of this.editBoxes) {
             ctx.save();
