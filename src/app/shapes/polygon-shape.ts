@@ -1,5 +1,5 @@
 import { Shape } from './shape';
-import { Polygon, Point, parseColor, Rectangle } from '../commons';
+import { Polygon, Point, parseColor, Rectangle, SVGNode } from '../commons';
 
 
 export class PolygonShape extends Shape {
@@ -85,4 +85,22 @@ export class PolygonShape extends Shape {
         }
         ctx.restore();
     }
+
+    getSVGNode() {
+        let node = super.getSVGNode();
+        for(let polygon of this.polygons) {
+            let polygonNode = new SVGNode("polygon");
+            let points:number[]= [];
+            for (let point of polygon.points) {
+                points.push(point.x*this.width);
+                points.push(point.y*this.height);
+            }
+            polygonNode.setParam("id", this.getSVGIdNum("p"));
+            polygonNode.setParam("points", points.join(","));
+            polygonNode.setStyle("fill-rule", "evenodd");
+            node.children[0].addChild(polygonNode);
+        }
+        return node;
+    }
+
 }

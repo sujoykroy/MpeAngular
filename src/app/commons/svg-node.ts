@@ -9,6 +9,7 @@ function numberSort(a,b) {
 export class SVGNode {
     domElement: Element;
     styles:any = {};
+    children:SVGNode[] = [];
 
     constructor (tagName) {
         this.domElement = document.createElementNS(SVGNameSpace, tagName);
@@ -29,6 +30,7 @@ export class SVGNode {
         if (child instanceof SVGAnim) {
             this.domElement.appendChild(child.getStyle());
         }else if (child instanceof SVGNode) {
+            this.children.push(child);
             this.domElement.appendChild(child.domElement);
         } else {
             this.domElement.appendChild(child);
@@ -128,8 +130,11 @@ export class SVGAnim {
     }
 
     getStyle() {
+        let styleTag:any = document.createElement("style");
+
         let animStringArray:string[] = [];
         let fullTime:any = this.getMaxTime();
+        if (fullTime == 0) return styleTag;
 
         for(let shapeIdNum of Object.keys(this.shapeIdNumTimePosPropValues)) {
             let timePosPropValues = this.shapeIdNumTimePosPropValues[shapeIdNum];
@@ -198,25 +203,25 @@ export class SVGAnim {
             );
         }
         let animName = "svgAnimRoot" + this.rootIdNum;
-        animStringArray.push(
-                "@keyframes " + animName +" {\n " +
-                "   0% {visibility: visible;}\n" +
-                "   animation-name: " + animName + ";\n" +
-                "   100% {visibility: hidden;}\n" +
-                " }"
-        )
-        animStringArray.push(
-                "#" + SVGNode.getSVGId(this.rootIdNum) +" {\n " +
-                "   visibility: hidden;\n" +
-                "   animation-name: " + animName + ";\n" +
-                "   animation-duration: " + fullTime + "s;\n" +
-                "   animation-timing-function: linear;\n" +
-                "   animation-delay: "+this.delay+"s;\n" +
-                "   animation-fill-mode: forwards;\n}" +
-                " }"
-        );
-
-        let styleTag:any = document.createElement("style");
+        if (animStringArray.length>0) {
+            animStringArray.push(
+                    "@keyframes " + animName +" {\n " +
+                    "   0% {visibility: visible;}\n" +
+                    "   animation-name: " + animName + ";\n" +
+                    "   100% {visibility: hidden;}\n" +
+                    " }"
+            )
+            animStringArray.push(
+                    "#" + SVGNode.getSVGId(this.rootIdNum) +" {\n " +
+                    "   visibility: hidden;\n" +
+                    "   animation-name: " + animName + ";\n" +
+                    "   animation-duration: " + fullTime + "s;\n" +
+                    "   animation-timing-function: linear;\n" +
+                    "   animation-delay: "+this.delay+"s;\n" +
+                    "   animation-fill-mode: forwards;\n}" +
+                    " }"
+            );
+        }
         styleTag.innerHTML = animStringArray.join("\n");
         return styleTag;
     }

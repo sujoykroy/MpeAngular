@@ -342,7 +342,12 @@ export class Shape {
     getSVGNode() {
         let node = new SVGNode("g");
         node.setParam("id", this.getSVGIdNum());
-        node.transform(this.translation, this.angle);
+        node.transform(this.getXy(), this.angle);
+
+        let cornerNode = new SVGNode("g");
+        cornerNode.setParam("id", this.getSVGIdNum("c"));
+        cornerNode.transform(this.anchorAt.inverse());
+        node.addChild(cornerNode)
 
         if (this.borderColor) {
             node.setParam("stroke", this.borderColor.toHtml());

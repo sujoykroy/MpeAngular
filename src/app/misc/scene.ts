@@ -19,6 +19,7 @@ export class Scene {
         this.size = size;
         if (!containerShape) {
             containerShape = MultiShape.create(size.x, size.y);
+            containerShape.allowAutoFit = false;
         }
         this.containerShape = containerShape;
     }

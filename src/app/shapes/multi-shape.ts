@@ -9,13 +9,14 @@ import { ImageShape } from './image-shape';
 import { VideoShape } from './video-shape';
 import { TextShape } from './text-shape';
 import { Color, copyObject, Point, extendCtx, OrderedDict} from '../commons';
-import { Rectangle, parseColor, drawRoundedRectangle } from '../commons';
+import { Rectangle, parseColor, drawRoundedRectangle, SVGNode } from '../commons';
 
 export class MultiShape extends Shape {
     static TypeName = "multi_shape";
     shapes:Shape[] = []
     masked: boolean = false;
     timelines;
+    allowAutoFit:boolean = true;
 
     static create(width=1, height=1):MultiShape {
         return new MultiShape(new Point(0,0), null, null, width, height);
@@ -275,10 +276,18 @@ export class MultiShape extends Shape {
 
     getSVGNode() {
         let node = super.getSVGNode();
+        let anchorNode = node.children[0];
         for(let shape of this.shapes) {
-            node.addChild(shape.getSVGNode());
+            anchorNode.addChild(shape.getSVGNode());
         }
         return node;
+    }
+
+    getSVGAnimValue(propName, value) {
+        if(propName == "anchor") {
+            return this.createShapeParamValue(this.getSVGIdNum("a"), propName, value)
+        }
+        return super.getSVGAnimValue(propName, value);
     }
 
     autoFit() {
@@ -291,6 +300,7 @@ export class MultiShape extends Shape {
                 boundRect.expandToIncludeRect(shape.getAbsBoundRect());
             }
         }
+        if (!this.allowAutoFit) return;
         let absAnchorAt:Point = this.getAbsAnchorAt();
         for(let shape of this.shapes) {
             let shapeAbsAnchorAt:Point = shape.getAbsAnchorAt();

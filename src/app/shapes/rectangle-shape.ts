@@ -60,7 +60,7 @@ export class RectangleShape extends Shape {
         rectNode.setParam("id", this.getSVGIdNum("r"));
         rectNode.setParam("width", this.width);
         rectNode.setParam("height", this.height);
-        node.addChild(rectNode);
+        node.children[0].addChild(rectNode);
         return node;
     }
 

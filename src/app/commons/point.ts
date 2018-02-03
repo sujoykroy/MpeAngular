@@ -11,6 +11,10 @@ export class Point {
         return new Point(this.x, this.y);
     }
 
+    inverse():Point {
+        return new Point(-this.x, -this.y);
+    }
+
     scale(sx:number, sy:number) {
         this.x *= sx;
         this.y *= sy;
